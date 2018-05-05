@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class TodoController
+class EntryController
 {
     private $db;
 
@@ -22,19 +22,19 @@ class TodoController
 
     public function getAll()
     {
-        $getAll = $this->db->prepare('SELECT * FROM todos');
+        $getAll = $this->db->prepare('SELECT * FROM entries');
         $getAll->execute();
         return $getAll->fetchAll();
     }
 
     public function getOne($id)
     {
-        $getOne = $this->db->prepare('SELECT * FROM todos WHERE id = :id');
+        $getOne = $this->db->prepare('SELECT * FROM entries WHERE entryID = :id');
         $getOne->execute([':id' => $id]);
         return $getOne->fetch();
     }
 
-    public function add($todo)
+    public function add($entry)
     {
         /**
          * Default 'completed' is false so we only need to insert the 'content'
@@ -47,8 +47,8 @@ class TodoController
          * Insert the value from the parameter into the database
          */
         $addOne->execute([
-            ':title'  => $todo['title'],
-            ':content'  => $todo['content']
+            ':title'  => $entry['title'],
+            ':content'  => $entry['content']
         ]);
 
         /**
@@ -58,7 +58,7 @@ class TodoController
          */
         return [
           'id'          => (int)$this->db->lastInsertId(),
-          'content'     => $todo['content'],
+          'content'     => $entry['content'],
           'completed'   => false
         ];
     }

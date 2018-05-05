@@ -1,5 +1,5 @@
 function main(){
-  fetch('api/todos')
+  fetch('api/facebook')
     .then(res => res.json())
     .then(console.log);
 }
@@ -13,7 +13,9 @@ function getAllUsers(){
 function postTodo(){
   // x-www-form-urlencoded
   const formData = new FormData();
-  const todoInput = document.getElementById('todoInput');
+  const todoTitle = document.getElementById('title');
+  const todoInput = document.getElementById('content');
+  formData.append('title', todoTitle.value);
   formData.append('content', todoInput.value);
 
   const postOptions = {
@@ -23,7 +25,7 @@ function postTodo(){
     credentials: 'include'
   }
 
-  fetch('api/todos', postOptions)
+  fetch('api/entries', postOptions)
     .then(res => res.json())
     .then((newTodo) => {
         document.body.insertAdjacentHTML('beforeend', newTodo.data.content);
