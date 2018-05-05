@@ -1,20 +1,23 @@
-function main(){
+function main() {
   fetch('api/todos')
     .then(res => res.json())
     .then(console.log);
 }
 
-function getAllUsers(){
+function getAllUsers() {
   fetch('api/users')
     .then(res => res.json())
     .then(console.log);
 }
 
-function postTodo(){
+function postTodo() {
   // x-www-form-urlencoded
   const formData = new FormData();
-  const todoInput = document.getElementById('todoInput');
-  formData.append('content', todoInput.value);
+  const title = document.getElementById('title');
+  const content = document.getElementById('content');
+  formData.append("title", title.value);
+  formData.append('content', content.value);
+
 
   const postOptions = {
     method: 'POST',
@@ -23,15 +26,12 @@ function postTodo(){
     credentials: 'include'
   }
 
-  fetch('api/todos', postOptions)
+  fetch('api/entries', postOptions)
     .then(res => res.json())
-    .then((newTodo) => {
-        document.body.insertAdjacentHTML('beforeend', newTodo.data.content);
-    });
 }
 
 
-function login(){
+function login() {
   const formData = new FormData();
   formData.append('username', 'goran');
   formData.append('password', 'bunneltan');
@@ -48,7 +48,7 @@ function login(){
 }
 
 const form = document.getElementById('newTodo');
-form.addEventListener('submit', function (e) {
+form.addEventListener('submit', function(e) {
   e.preventDefault();
   const formData = new FormData(this);
 });

@@ -11,7 +11,8 @@
 
 <body>
   <h1>Frontpage</h1>
-  <input type="text" id="todoInput">
+  <input type="text" id="title">
+  <input type="text" id="content">
   <button id="addTodo">Add Todo</button>
 
   <form action="" id="newTodo">
