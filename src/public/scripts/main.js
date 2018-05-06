@@ -1,5 +1,5 @@
 function main() {
-  fetch('api/todos')
+  fetch('api/facebook')
     .then(res => res.json())
     .then(console.log);
 }
@@ -10,13 +10,65 @@ function getAllUsers() {
     .then(console.log);
 }
 
-function postTodo() {
+function login() {
+  const formData = new FormData();
+  const loginUsername = document.getElementById('loginUsername').value;
+  const loginPassword = document.getElementById('loginPassword').value;
+  formData.append('username', loginUsername);
+  formData.append('password', loginPassword);
+  const postOptions = {
+    method: 'POST',
+    body: formData,
+    // DON'T FORGET
+    credentials: 'include'
+  }
+
+  fetch('/login', postOptions)
+    .then(res => res.json())
+    .then(console.log);
+}
+
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  login();
+  loginForm.reset();
+  location.reload();
+});
+
+function register() {
+  const formData = new FormData();
+  const registerUsername = document.getElementById('registerUsername').value;
+  const registerPassword = document.getElementById('registerPassword').value;
+  formData.append('username', registerUsername);
+  formData.append('password', registerPassword);
+
+  const postOptions = {
+    method: 'POST',
+    body: formData,
+    // MUCH IMPORTANCE!
+    credentials: 'include'
+  }
+
+  fetch('/register', postOptions)
+    .then(res => res.json())
+    .then(console.log);
+}
+
+const registerForm = document.getElementById('registerForm');
+registerForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  register();
+  registerForm.reset();
+});
+
+function postEntry() {
   // x-www-form-urlencoded
   const formData = new FormData();
-  const title = document.getElementById('title');
-  const content = document.getElementById('content');
-  formData.append("title", title.value);
-  formData.append('content', content.value);
+  const title = document.getElementById('title').value;
+  const content = document.getElementById('content').value;
+  formData.append("title", title);
+  formData.append('content', content);
 
 
   const postOptions = {
@@ -30,28 +82,16 @@ function postTodo() {
     .then(res => res.json())
 }
 
-
-function login() {
-  const formData = new FormData();
-  formData.append('username', 'goran');
-  formData.append('password', 'bunneltan');
-  const postOptions = {
-    method: 'POST',
-    body: formData,
-    // DON'T FORGET
-    credentials: 'include'
-  }
-
-  fetch('/login', postOptions)
-    .then(res => res.json())
-    .then(console.log);
-}
-
-const form = document.getElementById('newTodo');
-form.addEventListener('submit', function(e) {
+const entryForm = document.getElementById('entryForm');
+entryForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  const formData = new FormData(this);
+  postEntry();
+  entryForm.reset();
 });
 
-const addTodoButton = document.getElementById('addTodo');
-addTodoButton.addEventListener('click', postTodo);
+// const form = document.getElementById('newTodo');
+// form.addEventListener('submit', function(e) {
+//   e.preventDefault();
+//   const formData = new FormData(this);
+// });
+//
