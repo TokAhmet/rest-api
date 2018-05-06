@@ -37,6 +37,12 @@ $app->get('/', function ($request, $response, $args) {
 });
 
 
+$app->post('/register', function($request, $response, $args) {
+
+    $body = $request->getParsedBody();
+    $this->users->store($body['username'], $body['password']);
+});
+
 /**
  * I added basic inline login functionality. This could be extracted to a
  * separate class. If the session is set is checked in 'auth.php'
@@ -48,16 +54,13 @@ $app->post('/login', function ($request, $response, $args) {
      * https://www.slimframework.com/docs/v3/objects/request.html#the-request-body
      */
     $body = $request->getParsedBody();
-    $fetchUserStatement = $this->db->prepare('SELECT * FROM users WHERE username = :username');
-    $fetchUserStatement->execute([
-        ':username' => $body['username']
-    ]);
-    $user = $fetchUserStatement->fetch();
-    if (password_verify($body['password'], $user['password'])) {
-        $_SESSION['loggedIn'] = true;
-        $_SESSION['userID'] = $user['id'];
-        return $response->withJson(['data' => [ $user['id'], $user['username'] ]]);
+    $userID = $this->users->signIn($body['username'], $body['password']);
+
+    if($userID){
+        $_SESSION['userID'] = $userID;
+        return $response->withJson(['data' => [$userID['userID'], $body['username'] ]]);
     }
+
     return $response->withJson(['error' => 'wrong password']);
 });
 

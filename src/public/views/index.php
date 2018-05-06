@@ -1,25 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="css/style.css">
-  <title>Frontpage</title>
+	<?php require_once('partials/head.php'); ?>
 </head>
-
 <body>
-  <h1>Frontpage</h1>
-  <input type="text" id="title">
-  <input type="text" id="content">
-  <button id="addTodo">Add Todo</button>
+	<?php require_once('partials/navbar.php'); ?>
+	
+	<div class="container">
+		<?php if(!isset($_SESSION['userID'])): ?> 
 
-  <form action="" id="newTodo">
-    <input type="text" name="content">
-    <input type="submit">
-  </form>
-  <script src="scripts/main.js"></script>
+		<div class="container">
+			<h1 class="h2 mt-3">Create new account</h1>
+
+			<div class="row">	
+				<form class="col-6" action="" method="POST" id="registerForm">
+					<div class="form-group">
+						<label for="registerUsername">Username</label>
+						<input type="text" class="form-control" id="registerUsername" name="username" placeholder="Enter username">
+					</div>
+					<div class="form-group">
+						<label for="registerPassword">Password</label>
+						<input type="password" class="form-control" id="registerPassword" name="password" placeholder="Password">
+					</div>
+					<button type="submit" class="btn btn-primary">Register</button>
+				</form> 
+			</div>   
+		</div>
+
+		<div class="container">
+			<h1 class="h2 mt-3">Sign in using existing account</h1>
+
+			<div class="row">
+				<form class="col-6" action="" method="POST" id="loginForm">
+					<div class="form-group">
+						<label for="loginUsername">Username</label>
+						<input type="text" class="form-control" id="loginUsername" name="username" placeholder="Enter username">
+					</div>
+					<div class="form-group">
+						<label for="loginPassword">Password</label>
+						<input type="password" class="form-control" id="loginPassword" name="password" placeholder="Password">
+					</div>
+					<button type="submit" class="btn btn-primary">Sign in</button>
+				</form> 
+			</div>   
+		</div>
+		
+		<?php else:
+			echo "yoyoyoyoyo logged in MF";
+		endif;?>
+		
+	</div>
+
+	<?php require_once('partials/footer.php'); ?>
 </body>
-
 </html>
