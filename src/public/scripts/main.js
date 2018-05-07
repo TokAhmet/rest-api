@@ -10,57 +10,29 @@ function getAllUsers() {
     .then(console.log);
 }
 
-function login() {
-  const formData = new FormData();
-  const loginUsername = document.getElementById('loginUsername').value;
-  const loginPassword = document.getElementById('loginPassword').value;
-  formData.append('username', loginUsername);
-  formData.append('password', loginPassword);
-  const postOptions = {
-    method: 'POST',
-    body: formData,
-    // DON'T FORGET
-    credentials: 'include'
-  }
 
-  fetch('/login', postOptions)
-    .then(res => res.json())
-    .then(console.log);
+function getAllEntries() {
+  let entryOutput = document.getElementById('entryOutput');
+  fetch("api/entries")
+  .then(res => res.json())
+    .then(function(data){
+      return data.data.forEach(obj => {
+        let entryDiv = document.createElement("div");
+        entryDiv.classList.add("text-center");
+        let h3Title = document.createElement("h3");
+        h3Title.innerHTML = obj.title;
+        let pContent = document.createElement("p");
+        pContent.innerHTML = obj.content;
+        entryDiv.appendChild(h3Title);
+        entryDiv.appendChild(pContent);
+        entryOutput.appendChild(entryDiv);
+    });
+  })
+  .then(console.log);
 }
 
-const loginForm = document.getElementById('loginForm');
-loginForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  login();
-  loginForm.reset();
-  location.reload();
-});
+getAllEntries();
 
-function register() {
-  const formData = new FormData();
-  const registerUsername = document.getElementById('registerUsername').value;
-  const registerPassword = document.getElementById('registerPassword').value;
-  formData.append('username', registerUsername);
-  formData.append('password', registerPassword);
-
-  const postOptions = {
-    method: 'POST',
-    body: formData,
-    // MUCH IMPORTANCE!
-    credentials: 'include'
-  }
-
-  fetch('/register', postOptions)
-    .then(res => res.json())
-    .then(console.log);
-}
-
-const registerForm = document.getElementById('registerForm');
-registerForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  register();
-  registerForm.reset();
-});
 
 function postEntry() {
   // x-www-form-urlencoded

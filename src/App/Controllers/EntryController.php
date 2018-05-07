@@ -16,6 +16,7 @@ class EntryController
         $getAll = $this->db->prepare('SELECT * FROM entries');
         $getAll->execute();
         return $getAll->fetchAll();
+
     }
 
     public function getOne($id)
@@ -25,13 +26,13 @@ class EntryController
         return $getOne->fetch();
     }
 
-    public function add($entry)
+    public function add($entry, $user)
     {
         /**
          * Default 'completed' is false so we only need to insert the 'content'
          */
         $addOne = $this->db->prepare(
-            'INSERT INTO entries (title,content) VALUES (:title,:content)'
+            'INSERT INTO entries (title,content,createdBy) VALUES (:title,:content,:createdBy)'
         );
 
         /**
@@ -40,6 +41,7 @@ class EntryController
         $addOne->execute([
           ":title" => $entry["title"],
           ':content'  => $entry['content'],
+          ":createdBy" => $user
       ]);
 
         /**
@@ -51,6 +53,7 @@ class EntryController
           'id'          => (int)$this->db->lastInsertId(),
           "title"       => $entry["title"],
           'content'     => $entry['content'],
+          "createdBy"   => $user
         ];
     }
   }

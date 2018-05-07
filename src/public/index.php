@@ -116,7 +116,7 @@ $app->group('/api', function () use ($app) {
          * https://www.slimframework.com/docs/v3/objects/request.html#the-request-body
          */
         $body = $request->getParsedBody();
-        $newTodo = $this->entries->add($body);
+        $newTodo = $this->entries->add($body,$_SESSION["userID"]);
         return $response->withJson(['data' => $newTodo]);
     });
 
