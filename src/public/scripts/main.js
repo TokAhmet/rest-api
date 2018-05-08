@@ -14,21 +14,33 @@ function getAllUsers() {
 function getAllEntries() {
   let entryOutput = document.getElementById('entryOutput');
   fetch("api/entries")
-  .then(res => res.json())
-    .then(function(data){
+    .then(res => res.json())
+    .then(function(data) {
       return data.data.forEach(obj => {
         let entryDiv = document.createElement("div");
         entryDiv.classList.add("text-center");
-        let h3Title = document.createElement("h3");
-        h3Title.innerHTML = obj.title;
-        let pContent = document.createElement("p");
-        pContent.innerHTML = obj.content;
-        entryDiv.appendChild(h3Title);
-        entryDiv.appendChild(pContent);
+
+        let entryTitle = document.createElement("h3");
+        entryTitle.innerHTML = obj.title;
+        entryDiv.appendChild(entryTitle);
+
+        let entryContent = document.createElement("p");
+        entryContent.innerHTML = obj.content;
+        entryDiv.appendChild(entryContent);
+
+        let deleteButton = document.createElement("button");
+        deleteButton.innerHTML = "Delete";
+        deleteButton.addEventListener('click', function(e) {
+            e.preventDefault()
+            removeEntry(obj.entryID);
+            location.reload();
+        });
+        entryDiv.appendChild(deleteButton);
+
         entryOutput.appendChild(entryDiv);
-    });
-  })
-  .then(console.log);
+      });
+    })
+    .then(console.log);
 }
 
 getAllEntries();
@@ -54,12 +66,23 @@ function postEntry() {
     .then(res => res.json())
 }
 
+
+function removeEntry(entryID) {
+  fetch("removeEntry/" + entryID,{
+     method: "DELETE"})
+    .then(res => res.json())
+    .then(console.log);
+}
+
 const entryForm = document.getElementById('entryForm');
 entryForm.addEventListener('submit', (e) => {
   e.preventDefault();
   postEntry();
   entryForm.reset();
+  location.reload();
 });
+
+
 
 // const form = document.getElementById('newTodo');
 // form.addEventListener('submit', function(e) {

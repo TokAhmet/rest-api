@@ -70,6 +70,10 @@ $app->get('/logout', function ($request, $response, $args) {
     return $response->withJson('Success');
 });
 
+$app->delete("/removeEntry/{id}", function($request, $response, $args) {
+    $deleteEntry = $this->entries->removeEntry($args["id"]);
+    return $response->withJson($deleteEntry);
+});
 
 /**
  * The group is used to group everything connected to the API under '/api'

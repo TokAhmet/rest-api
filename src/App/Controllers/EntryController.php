@@ -56,4 +56,14 @@ class EntryController
           "createdBy"   => $user
         ];
     }
+
+    public function removeEntry($entryID)
+
+   {
+       $statement = $this->db->prepare("DELETE FROM entries WHERE entryID = :entryID");
+       $statement->execute([
+           ":entryID" => $entryID
+       ]);
+
+   }
   }
