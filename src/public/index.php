@@ -38,7 +38,7 @@ $app->get('/', function ($request, $response, $args) {
 
 
 $app->post('/register', function($request, $response, $args) {
-
+    
     $body = $request->getParsedBody();
     $this->users->store($body['username'], $body['password']);
 });
@@ -73,6 +73,10 @@ $app->get('/logout', function ($request, $response, $args) {
     return $response->withJson('Success');
 });
 
+
+$app->delete('/removeEntry/{id}', function($request, $response, $args) {
+    $this->entries->removeEntry($args['id']);
+});
 
 /**
  * The group is used to group everything connected to the API under '/api'
@@ -119,7 +123,7 @@ $app->group('/api', function () use ($app) {
          * https://www.slimframework.com/docs/v3/objects/request.html#the-request-body
          */
         $body = $request->getParsedBody();
-        $newEntry = $this->entries->add($body);
+        $newEntry = $this->entries->add($body, $_SESSION['userID']);
         return $response->withJson(['data' => $newEntry]);
     });
 

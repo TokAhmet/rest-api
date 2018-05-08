@@ -46,7 +46,8 @@
 		</div>
 		
 		<?php else:
-			echo "yoyoyoyoyo logged in MF";
+			require_once('partials/entry-post-form.php');
+			require_once('partials/entry-posts.php');
 		endif;?>
 		
 	</div>

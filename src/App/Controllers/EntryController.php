@@ -34,21 +34,32 @@ class EntryController
         return $getOne->fetch();
     }
 
-    public function add($entry)
+    public function removeEntry($entryID)
+    {
+
+        $statement = $this->db->prepare("DELETE FROM entries WHERE entryID = :entryID");
+
+        $statement->execute([
+            ":entryID" => $entryID
+        ]);
+    }
+
+    public function add($entry, $userID)
     {
         /**
          * Default 'completed' is false so we only need to insert the 'content'
          */
         $addOne = $this->db->prepare(
-            'INSERT INTO entries (title, content) VALUES (:title, :content)'
+            'INSERT INTO entries (title, content, createdBy) VALUES (:title, :content, :createdBy)'
         );
 
         /**
          * Insert the value from the parameter into the database
          */
         $addOne->execute([
-            ':title'  => $entry['title'],
-            ':content'  => $entry['content']
+            ':title'     => $entry['title'],
+            ':content'   => $entry['content'],
+            ':createdBy' => $userID
         ]);
 
         /**
