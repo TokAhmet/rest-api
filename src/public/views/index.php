@@ -9,7 +9,7 @@
 	<div class="container">
 		<?php if(!isset($_SESSION['userID'])): ?> 
 
-		<div class="container">
+<!-- 		<div class="container">
 			<h1 class="h2 mt-3">Create new account</h1>
 
 			<div class="row">	
@@ -43,7 +43,7 @@
 					<button type="submit" class="btn btn-primary">Sign in</button>
 				</form> 
 			</div>   
-		</div>
+		</div> -->
 		
 		<?php else:
 			require_once('partials/entry-post-form.php');

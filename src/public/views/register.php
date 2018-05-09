@@ -10,8 +10,15 @@
 		<h1 class="h2 mt-3">Create new account</h1>
 
         <div class="row">
-            <form class="col-6" action="partials/register-controller.php" method="POST">
-                <?php require_once('partials/auth-form.php'); ?>
+            <form class="col-6" action="index.php" method="POST" id="registerForm">
+                <div class="form-group">
+                    <label for="registerUsername">Username</label>
+                    <input type="text" class="form-control" id="registerUsername" name="username" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" class="form-control" id="registerPassword" name="password" placeholder="Password">
+                </div>
                 <button type="submit" class="btn btn-primary">Register</button>
             </form> 
         </div>   

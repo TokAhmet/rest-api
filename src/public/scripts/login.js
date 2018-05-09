@@ -21,5 +21,5 @@ const loginForm = document.getElementById('loginForm');
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     login();
-    location.reload();
+    location.href = 'http://localhost:3000/index.php';
 });

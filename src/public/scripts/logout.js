@@ -8,5 +8,5 @@ const logoutButton = document.getElementById('logoutButton');
 logoutButton.addEventListener('click', (e) => {
     e.preventDefault();
     logout();
-    location.reload();
+    location.href = 'http://localhost:3000/index.php';
 });

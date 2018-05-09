@@ -36,6 +36,20 @@ $app->get('/', function ($request, $response, $args) {
     return $this->view->render($response, 'index.php');
 });
 
+$app->get('/register', function ($request, $response, $args) {
+    /**
+     * This fetches the 'index.php'-file inside the 'views'-folder
+     */
+    return $this->view->render($response, 'register.php');
+});
+
+$app->get('/login', function ($request, $response, $args) {
+    /**
+     * This fetches the 'index.php'-file inside the 'views'-folder
+     */
+    return $this->view->render($response, 'login.php');
+});
+
 
 $app->post('/register', function($request, $response, $args) {
     
@@ -73,11 +87,6 @@ $app->get('/logout', function ($request, $response, $args) {
     return $response->withJson('Success');
 });
 
-
-$app->delete('/removeEntry/{id}', function($request, $response, $args) {
-    $this->entries->removeEntry($args['id']);
-});
-
 /**
  * The group is used to group everything connected to the API under '/api'
  * This was done so that we can check if the user is authed when calling '/api'
@@ -101,6 +110,18 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(['data' => $allEntries]);
     });
 
+    // POST http://localhost:XXXX/api/todos
+    $app->post('/entries', function ($request, $response, $args) {
+        /**
+         * Everything sent in 'body' when doing a POST-request can be
+         * extracted with 'getParsedBody()' from the request-object
+         * https://www.slimframework.com/docs/v3/objects/request.html#the-request-body
+         */
+        $body = $request->getParsedBody();
+        $newEntry = $this->entries->add($body, $_SESSION['userID']);
+        return $response->withJson(['data' => $newEntry]);
+    });
+
     // GET http://localhost:XXXX/api/todos/5
     $app->get('/entries/{id}', function ($request, $response, $args) {
         /**
@@ -115,16 +136,16 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(['data' => $singleEntry]);
     });
 
-    // POST http://localhost:XXXX/api/todos
-    $app->post('/entries', function ($request, $response, $args) {
-        /**
-         * Everything sent in 'body' when doing a POST-request can be
-         * extracted with 'getParsedBody()' from the request-object
-         * https://www.slimframework.com/docs/v3/objects/request.html#the-request-body
-         */
+    
+    
+    $app->patch('/entries/{id}', function($request, $response, $args) {
         $body = $request->getParsedBody();
-        $newEntry = $this->entries->add($body, $_SESSION['userID']);
-        return $response->withJson(['data' => $newEntry]);
+        $editedEntry = $this->entries->editEntry($args['id'], $body['title'], $body['content']);
+        return $response->withJson(['data' => $editedEntry]);
+    });
+
+    $app->delete('/entries/{id}', function($request, $response, $args) {
+        $this->entries->removeEntry($args['id']);
     });
 
     $app->get('/users', function ($request, $response, $args) {

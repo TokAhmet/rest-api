@@ -1,9 +1,10 @@
+let allEntries = [];
+
 function main(){
 	fetch('api/facebook')
 	.then(res => res.json())
 	.then(console.log);
 }
-
 
 function getAllUsers(){
 	fetch('api/users')
@@ -12,10 +13,62 @@ function getAllUsers(){
 }
 
 function removeEntry(entryID) {
-	fetch('removeEntry/' + entryID,
+	fetch('api/entries/' + entryID,
 	{method: 'DELETE'})
 	.then(res => res.json())
 	.then(console.log);
+}
+
+function editEntry(entryID, body) {
+	const postOptions = {
+		method: 'PATCH',
+		headers: {
+			"Content-Type" : "application/x-www-form-urlencoded"
+		},
+		body: body,
+		// MUCH IMPORTANCE!
+		credentials: 'include'
+	}
+
+	fetch('api/entries/' + entryID, postOptions)
+		.then(res => res.json())
+		.then((newTodo) => {
+			console.log(newTodo)
+		});
+}
+
+function createEditForm(entry){
+	let formDiv = document.createElement('div');
+	let editForm = document.createElement('form');
+	let titleDiv = document.createElement('div');
+	let titleInput = document.createElement('input');
+
+	formDiv.classList.add('modal')
+	editForm.classList.add('modal-content')
+	titleInput.setAttribute('type', 'text');
+	titleInput.name = "title";
+	titleInput.value = entry.title;
+	titleDiv.appendChild(titleInput);
+	editForm.appendChild(titleDiv);
+
+	let contentDiv = document.createElement('div');
+	let contentInput = document.createElement('textarea');
+	contentInput.name = "content";
+	contentInput.value = entry.content;
+	contentDiv.appendChild(contentInput);
+	editForm.appendChild(contentDiv);
+
+	let formButton = document.createElement('input');
+	formButton.type = "submit";
+	formButton.innerHTML = "Update";
+	editForm.addEventListener('submit', function(e) {
+		e.preventDefault();
+		const body = `content=${contentInput.value}&title=${titleInput.value}`;
+		editEntry(entry.entryID, body);
+	})
+	editForm.appendChild(formButton);
+	formDiv.appendChild(editForm);
+	document.body.appendChild(formDiv);
 }
 
 function getAllEntries() {
@@ -23,24 +76,40 @@ function getAllEntries() {
 	fetch('api/entries')
 	.then(res => res.json())
 	.then(function (entries) {
+		allEntries = entries;
+
 		return entries.data.forEach(entry => {
 			let entryDiv = document.createElement('div');
 			let entryTitle = document.createElement('h3');
+			entryDiv.id = entry.entryID;
 			entryTitle.innerHTML = entry.title;
 			entryDiv.appendChild(entryTitle);
-
+			
 			let entryContent = document.createElement('p');
 			entryContent.innerHTML = entry.content;
 			entryDiv.appendChild(entryContent);
-
-			let entryButton = document.createElement('button');
-			entryButton.innerHTML = 'Delete';
-			entryButton.addEventListener('click', (e) => {
+			
+			let entryDeleteButton = document.createElement('button');
+			entryDeleteButton.innerHTML = 'Delete';
+			entryDeleteButton.addEventListener('click', function(e) {
+				const deleteID = this.parentElement.id;
+				const entry = allEntries.data.find(filterEntry => filterEntry.entryID === deleteID);
 				removeEntry(entry.entryID);
 				location.reload();
 			})
-			entryDiv.appendChild(entryButton);
+			entryDiv.appendChild(entryDeleteButton);
 
+			let entryEditButton = document.createElement('button');
+			entryEditButton.innerHTML = 'Edit';
+			entryEditButton.addEventListener('click', function(e) {
+				const editID = this.parentElement.id;
+				const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
+				createEditForm(entry);
+				const modal = document.getElementsByClassName("modal")[0];
+				modal.style.display = "block";
+				console.log(entry);
+			})
+			entryDiv.appendChild(entryEditButton);
 			entryOutput.appendChild(entryDiv);		
 		});
 	})

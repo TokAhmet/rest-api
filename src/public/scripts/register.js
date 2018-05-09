@@ -21,4 +21,5 @@ registerForm.addEventListener('submit', (e) => {
     e.preventDefault();
     register();
     registerForm.reset();
+    location.href = 'http://localhost:3000/login';
 });
