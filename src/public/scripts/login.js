@@ -21,5 +21,5 @@ loginForm.addEventListener('submit', (e) => {
   e.preventDefault();
   login();
   loginForm.reset();
-  location.reload();
+  location.href = "http://localhost:3000/index.php";
 });

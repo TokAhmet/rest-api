@@ -1,7 +1,83 @@
 body, html {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+}
+
+.modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+.modal-content {
+  position: relative;
+  background-color: red;
+  color: #fff;
+  margin: auto;
+  padding: 0;
+  width: 40%;
+  border: 3px solid #000;
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -webkit-animation: fadein 0.8s;
+  animation: fadein 0.8s;
+}
+
+.modal-body {
+  padding: 2px 16px;
+  text-align: center;
+}
+
+.modal-body input {
+  padding: 1rem;
+  margin: 1rem;
+  width: 90%;
+}
+
+.modal-footer {
+  padding: 2px 16px;
+  color: white;
+  min-height: 3rem;
+}
+
+.modal-footer button {
+  float: right;
+  -webkit-box-shadow: 0 3px #666;
+  box-shadow: 0 3px #666;
+  background-color: #000;
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: 6px;
+  font-weight: bold;
+}
+
+.modal-footer button:hover {
+  cursor: pointer;
+}
+
+#modal-span {
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+#modal-span:hover {
+  cursor: pointer;
 }

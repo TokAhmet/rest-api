@@ -12,8 +12,7 @@ require_once "partials/nav.php";?>
 
   <?php if (!isset($_SESSION["loggedIn"])): ?>
   <?php
-  require_once "partials/login_form.php";
-  require_once "partials/register_form.php";
+
   ?>
 
   <?php endif; ?>

@@ -36,6 +36,20 @@ $app->get('/', function ($request, $response, $args) {
     return $this->view->render($response, 'index.php');
 });
 
+$app->get('/register', function ($request, $response, $args) {
+    /**
+     * This fetches the 'index.php'-file inside the 'views'-folder
+     */
+    return $this->view->render($response, 'register_form.php');
+});
+
+$app->get('/login', function ($request, $response, $args) {
+    /**
+     * This fetches the 'index.php'-file inside the 'views'-folder
+     */
+    return $this->view->render($response, 'login_form.php');
+});
+
 $app->post('/register', function($request,$response,$args){
     $body = $request->getParsedBody();
     $this->users->store($body['username'], $body['password']);
@@ -68,11 +82,6 @@ $app->get('/logout', function ($request, $response, $args) {
     // No request data is being sent
     session_destroy();
     return $response->withJson('Success');
-});
-
-$app->delete("/removeEntry/{id}", function($request, $response, $args) {
-    $deleteEntry = $this->entries->removeEntry($args["id"]);
-    return $response->withJson($deleteEntry);
 });
 
 /**
@@ -132,6 +141,17 @@ $app->group('/api', function () use ($app) {
     $app->get('/users/{id}', function ($request, $response, $args) {
         $allUsers = $this->users->getOne($args['id']);
         return $response->withJson($allUsers);
+    });
+
+    $app->patch("/entries/{id}", function($request, $response, $args) {
+      $body = $request->getparsedBody();
+      $editEntry = $this->entries->editEntry($args["id"],$body["title"],$body["content"]);
+      return $response->withJson($editEntry);
+    });
+
+    $app->delete("/entries/{id}", function($request, $response, $args) {
+        $deleteEntry = $this->entries->removeEntry($args["id"]);
+        return $response->withJson($deleteEntry);
     });
 });
 

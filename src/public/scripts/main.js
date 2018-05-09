@@ -1,3 +1,5 @@
+let allEntries = [];
+
 function main() {
   fetch('api/facebook')
     .then(res => res.json())
@@ -10,15 +12,79 @@ function getAllUsers() {
     .then(console.log);
 }
 
+function updateEntry(entry){
+  let editDiv = document.createElement("div");
+  editDiv.className = "modal";
+  let editForm = document.createElement("form");
+
+  let titleInput = document.createElement("input");
+  titleInput.setAttribute('type', "text");
+  titleInput.name = "title";
+  titleInput.value = entry.title;
+  editForm.appendChild(titleInput);
+
+  let contentInput = document.createElement("textarea");
+  contentInput.name = "content";
+  contentInput.value = entry.content;
+  editForm.appendChild(contentInput);
+
+  let editButton = document.createElement("button");
+  editButton.innerHTML = "Edit";
+  editButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    const body = `content=${contentInput.value}&title=${titleInput.value}`;
+    editEntry(entry.entryID, body);
+    const modal = document.getElementsByClassName("modal")[0];
+    modal.style.display = "none";
+    location.reload();
+  });
+
+  let modalContent = document.createElement("div");
+  modalContent.className = "modal-content";
+  editDiv.appendChild(modalContent);
+
+  let modalBody = document.createElement("div");
+  modalBody.className = "modal-body";
+  modalBody.appendChild(editForm);
+  editDiv.appendChild(modalBody);
+
+  let modalFooter = document.createElement("div");
+  modalFooter.className = "modal-footer";
+  modalFooter.appendChild(editButton);
+  editDiv.appendChild(modalFooter);
+
+  document.body.appendChild(editDiv);
+}
+
+function editEntry(entryID,body) {
+  // x-www-form-urlencoded
+  const postOptions = {
+    method: 'PATCH',
+    headers: {
+        "Content-Type" : "application/x-www-form-urlencoded"
+    },
+    body: body,
+    // MUCH IMPORTANCE!
+    credentials: 'include'
+  }
+
+  fetch('api/entries/' + entryID, postOptions)
+  .then(res => res.json())
+  .then(console.log);
+}
 
 function getAllEntries() {
   let entryOutput = document.getElementById('entryOutput');
   fetch("api/entries")
     .then(res => res.json())
     .then(function(data) {
+
+      allEntries = data;
+
       return data.data.forEach(obj => {
         let entryDiv = document.createElement("div");
         entryDiv.classList.add("text-center");
+        entryDiv.id = obj.entryID;
 
         let entryTitle = document.createElement("h3");
         entryTitle.innerHTML = obj.title;
@@ -32,11 +98,28 @@ function getAllEntries() {
         deleteButton.innerHTML = "Delete";
         deleteButton.addEventListener('click', function(e) {
             e.preventDefault()
-            removeEntry(obj.entryID);
+            const removeID = this.parentElement.id;
+            const remove = allEntries.data.find(filterEntry => filterEntry.entryID === removeID);
+            removeEntry(removeID);
+            console.log(remove.entryID);
             location.reload();
         });
+
         entryDiv.appendChild(deleteButton);
 
+        let updateButton = document.createElement("button");
+        updateButton.innerHTML = "Edit";
+        updateButton.addEventListener('click', function(e) {
+            const editID = this.parentElement.id;
+            const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
+            updateEntry(entry);
+            const modal = document.getElementsByClassName("modal")[0];
+            modal.style.display = "block";
+            console.log(entry);
+
+        });
+
+        entryDiv.appendChild(updateButton);
         entryOutput.appendChild(entryDiv);
       });
     })
@@ -68,7 +151,7 @@ function postEntry() {
 
 
 function removeEntry(entryID) {
-  fetch("removeEntry/" + entryID,{
+  fetch("api/entries/" + entryID,{
      method: "DELETE"})
     .then(res => res.json())
     .then(console.log);
