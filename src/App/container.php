@@ -80,6 +80,10 @@ $container['users'] = function ($c) {
     return $userControllers;
 };
 
+$container['comments'] = function ($c) {
+    $commentControllers = new \App\Controllers\CommentController($c->get('db'));
+    return $commentControllers;
+};
 
 
 return $container;

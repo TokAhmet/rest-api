@@ -1,4 +1,5 @@
 let allEntries = [];
+let allComments = [];
 
 function main(){
 	fetch('api/facebook')
@@ -17,6 +18,13 @@ function removeEntry(entryID) {
 	{method: 'DELETE'})
 	.then(res => res.json())
 	.then(console.log);
+}
+
+function removeComment(entryID) {
+	fetch('api/comments/' + entryID,
+		{ method: 'DELETE' })
+		.then(res => res.json())
+		.then(console.log);
 }
 
 function editEntry(entryID, body) {
@@ -71,6 +79,36 @@ function createEditForm(entry){
 	document.body.appendChild(formDiv);
 }
 
+function postComment(entryID, commentContent) {
+	// x-www-form-urlencoded
+	const formData = new FormData();
+	formData.append('entryID', entryID);
+	formData.append('content', commentContent);
+
+	const postOptions = {
+		method: 'POST',
+		body: formData,
+		// MUCH IMPORTANCE!
+		credentials: 'include'
+	}
+
+	fetch('api/comments', postOptions)
+		.then(res => res.json())
+		.then((newTodo) => {
+			document.body.insertAdjacentHTML('beforeend', newTodo.data.content);
+		});
+}
+
+function getAllComments() {
+	fetch('api/comments')
+	.then(res => res.json())
+	.then(function (comments) {
+		allComments = comments;
+	})
+}
+
+getAllComments();
+
 function getAllEntries() {
 	let entryOutput = document.getElementById('entry');
 	fetch('api/entries')
@@ -92,8 +130,6 @@ function getAllEntries() {
 			let entryDeleteButton = document.createElement('button');
 			entryDeleteButton.innerHTML = 'Delete';
 			entryDeleteButton.addEventListener('click', function(e) {
-				const deleteID = this.parentElement.id;
-				const entry = allEntries.data.find(filterEntry => filterEntry.entryID === deleteID);
 				removeEntry(entry.entryID);
 				location.reload();
 			})
@@ -109,7 +145,41 @@ function getAllEntries() {
 				modal.style.display = "block";
 				console.log(entry);
 			})
-			entryDiv.appendChild(entryEditButton);
+			entryDiv.appendChild(entryEditButton);			
+
+			let commentDiv = document.createElement('div');
+			let commentTextarea = document.createElement('textarea');
+			commentDiv.appendChild(commentTextarea);
+			
+			let addCommentButton = document.createElement('button');
+			addCommentButton.innerHTML = "Add Comment";
+			addCommentButton.addEventListener('click', function(e) {
+				const entryID = this.parentElement.parentElement.id;
+				postComment(entryID, commentTextarea.value);
+				location.reload();
+			});
+			commentDiv.appendChild(addCommentButton);
+
+			allComments.data.forEach(comment => {
+				if(comment.entryID === entry.entryID) {
+					let postedCommentDiv = document.createElement('div');
+					let commentContent = document.createElement('p');
+					commentContent.innerHTML = comment.content;
+					
+					let deleteCommentButton = document.createElement('button');
+					deleteCommentButton.innerHTML = 'Delete Comment';
+					deleteCommentButton.addEventListener('click', (e) => {
+						removeComment(comment.commentID);
+						location.reload();
+					})
+					
+					postedCommentDiv.appendChild(commentContent);
+					postedCommentDiv.appendChild(deleteCommentButton);
+					commentDiv.appendChild(postedCommentDiv);
+				}
+			})
+
+			entryDiv.appendChild(commentDiv);			
 			entryOutput.appendChild(entryDiv);		
 		});
 	})
@@ -147,24 +217,3 @@ postForm.addEventListener('submit', (e) => {
 	postForm.reset();
 	location.reload();
 });
-
-
-
-/* function printToHtml() {
-	entries.data.foreach(entry => {
-		let entryTitle = document.getElementById('entryTitle');
-		entryTitle.innerHTML = entry.title;
-		let entryContent = document.getElementById('entryContent');
-		entryContent.innerHTML = entry.content;
-	});
-} */
-
-
-/* const form = document.getElementById('newTodo');
-form.addEventListener('submit', function (e) {
-	e.preventDefault();
-	const formData = new FormData(this);
-}); */
-
-/* const addTodoButton = document.getElementById('addTodo');
-addTodoButton.addEventListener('click', postTodo); */

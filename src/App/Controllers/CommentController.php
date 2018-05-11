@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class TodoController
+class CommentController
 {
     private $db;
 
@@ -22,33 +22,44 @@ class TodoController
 
     public function getAll()
     {
-        $getAll = $this->db->prepare('SELECT * FROM todos');
+        $getAll = $this->db->prepare('SELECT * FROM comments');
         $getAll->execute();
         return $getAll->fetchAll();
     }
 
     public function getOne($id)
     {
-        $getOne = $this->db->prepare('SELECT * FROM todos WHERE id = :id');
+        $getOne = $this->db->prepare('SELECT * FROM comments WHERE commentID = :id');
         $getOne->execute([':id' => $id]);
         return $getOne->fetch();
     }
 
-    public function add($todo)
+    public function removeComment($commentID)
+    {
+
+        $statement = $this->db->prepare("DELETE FROM comments WHERE commentID = :commentID");
+
+        $statement->execute([
+            ":commentID" => $commentID
+        ]);
+    }
+
+    public function add($comment, $userID)
     {
         /**
          * Default 'completed' is false so we only need to insert the 'content'
          */
         $addOne = $this->db->prepare(
-            'INSERT INTO entries (title, content) VALUES (:title, :content)'
+            'INSERT INTO comments (entryID, content, createdBy) VALUES (:entryID, :content, :createdBy)'
         );
 
         /**
          * Insert the value from the parameter into the database
          */
         $addOne->execute([
-            ':title'  => $todo['title'],
-            ':content'  => $todo['content']
+            ':entryID'     => $comment['entryID'],
+            ':content'   => $comment['content'],
+            ':createdBy' => $userID
         ]);
 
         /**
@@ -58,8 +69,8 @@ class TodoController
          */
         return [
           'id'          => (int)$this->db->lastInsertId(),
-          'content'     => $todo['content'],
-          'completed'   => false
+          'content'     => $entry['content'],
+          'createdBy'   => $userID
         ];
     }
 }
