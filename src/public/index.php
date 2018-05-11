@@ -117,8 +117,8 @@ $app->group('/api', function () use ($app) {
          * https://www.slimframework.com/docs/v3/objects/router.html#route-placeholders
          */
         $id = $args['id'];
-        $singleTodo = $this->entries->getOne($id);
-        return $response->withJson(['data' => $singleTodo]);
+        $singleEntry = $this->entries->getOne($id);
+        return $response->withJson(['data' => $singleEntry]);
     });
 
     // POST http://localhost:XXXX/api/todos
@@ -129,8 +129,8 @@ $app->group('/api', function () use ($app) {
          * https://www.slimframework.com/docs/v3/objects/request.html#the-request-body
          */
         $body = $request->getParsedBody();
-        $newTodo = $this->entries->add($body,$_SESSION["userID"]);
-        return $response->withJson(['data' => $newTodo]);
+        $newEntry = $this->entries->add($body,$_SESSION["userID"]);
+        return $response->withJson(['data' => $newEntry]);
     });
 
     $app->get('/users', function ($request, $response, $args) {
@@ -153,6 +153,54 @@ $app->group('/api', function () use ($app) {
         $deleteEntry = $this->entries->removeEntry($args["id"]);
         return $response->withJson($deleteEntry);
     });
+
+    // GET http://localhost:XXXX/api/todos
+    $app->get('/comments', function ($request, $response, $args) {
+        /**
+         * $this->get('Todos') is available to us because we injected it into the container
+         * in 'App/container.php'. This makes it easier for us to call the database
+         * inside our routes.
+         */
+        // $this === $app
+        $allComments = $this->comments->getAll();
+        /**
+         * Wrapping the data when returning as a safety thing
+         * https://www.owasp.org/index.php/AJAX_Security_Cheat_Sheet#Server_Side
+         */
+        return $response->withJson(['data' => $allComments]);
+    });
+
+    // GET http://localhost:XXXX/api/todos/5
+    $app->get('/comments/{id}', function ($request, $response, $args) {
+        /**
+         * {id} is a placeholder for whatever you write after todos. So if we write
+         * /todos/4 the {id} will be 4. This gets saved in the $args array
+         * $args['id'] === 4
+         * The name inside of '$args' must match the placeholder in the url
+         * https://www.slimframework.com/docs/v3/objects/router.html#route-placeholders
+         */
+        $id = $args['id'];
+        $singleComment = $this->comments->getOne($id);
+        return $response->withJson(['data' => $singleComment]);
+    });
+
+    // POST http://localhost:XXXX/api/todos
+    $app->post('/comments', function ($request, $response, $args) {
+        /**
+         * Everything sent in 'body' when doing a POST-request can be
+         * extracted with 'getParsedBody()' from the request-object
+         * https://www.slimframework.com/docs/v3/objects/request.html#the-request-body
+         */
+        $body = $request->getParsedBody();
+        $newTodo = $this->comments->add($body,$_SESSION["userID"]);
+        return $response->withJson(['data' => $newTodo]);
+    });
+
+    $app->delete("/comments/{id}", function($request, $response, $args) {
+        $deleteEntry = $this->comments->removeComment($args["id"]);
+        return $response->withJson($deleteEntry);
+    });
+
 });
 
 $app->run();

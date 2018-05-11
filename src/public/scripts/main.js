@@ -1,4 +1,5 @@
 let allEntries = [];
+let allComments = [];
 
 function main() {
   fetch('api/facebook')
@@ -12,7 +13,143 @@ function getAllUsers() {
     .then(console.log);
 }
 
-function updateEntry(entry){
+function postComment(entryID, commentContent) {
+  // x-www-form-urlencoded
+  const formData = new FormData();
+
+  formData.append('entryID', entryID);
+  formData.append("content", commentContent);
+
+
+  const postOptions = {
+    method: 'POST',
+    body: formData,
+    // MUCH IMPORTANCE!
+    credentials: 'include'
+  }
+
+  fetch('api/comments', postOptions)
+    .then(res => res.json())
+    .then(console.log);
+}
+
+function getComments() {
+
+  fetch("api/comments")
+    .then(res => res.json())
+    .then(function(data) {
+
+      allComments = data;
+      console.log(allComments);
+
+    });
+}
+
+getComments();
+
+function removeComment(commentID) {
+  fetch("api/comments/" + commentID, {
+      method: "DELETE"
+    })
+    .then(res => res.json())
+    .then(console.log);
+}
+
+function getAllEntries() {
+  let entryOutput = document.getElementById('entryOutput');
+  fetch("api/entries")
+    .then(res => res.json())
+    .then(function(data) {
+
+      allEntries = data;
+
+      return data.data.forEach(obj => {
+        let entryDiv = document.createElement("div");
+        entryDiv.classList.add("text-center");
+        entryDiv.id = obj.entryID;
+
+        let entryTitle = document.createElement("h3");
+        entryTitle.innerHTML = obj.title;
+        entryDiv.appendChild(entryTitle);
+
+        let entryContent = document.createElement("p");
+        entryContent.innerHTML = obj.content;
+        entryDiv.appendChild(entryContent);
+
+        let deleteEntryButton = document.createElement("button");
+        deleteEntryButton.innerHTML = "Delete";
+        deleteEntryButton.addEventListener('click', function(e) {
+          removeEntry(obj.entryID);
+          console.log(obj.entryID);
+          location.reload();
+        });
+
+        entryDiv.appendChild(deleteEntryButton);
+
+        let updateButton = document.createElement("button");
+        updateButton.innerHTML = "Edit";
+        updateButton.addEventListener('click', function(e) {
+          const editID = this.parentElement.id;
+          const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
+          updateEntry(entry);
+          const modal = document.getElementsByClassName("modal")[0];
+          modal.style.display = "block";
+          console.log(entry);
+
+        });
+
+        entryDiv.appendChild(updateButton);
+
+        let commentDiv = document.createElement("div");
+        let commentTextarea = document.createElement("textarea");
+        commentDiv.appendChild(commentTextarea);
+
+        let addCommentButton = document.createElement("button");
+        addCommentButton.innerHTML = "Add Comment";
+
+        addCommentButton.addEventListener('click', function(e) {
+          const entryID = this.parentElement.parentElement.id;
+          postComment(entryID, commentTextarea.value);
+          location.reload();
+        });
+
+        commentDiv.appendChild(addCommentButton);
+
+        allComments.data.forEach(comment => {
+          if (comment.entryID === obj.entryID) {
+
+            let outputComment = document.createElement("div");
+            outputComment.classList.add("text-center");
+            let commentContent = document.createElement("p");
+            commentContent.innerHTML = comment.content;
+
+            let deleteCommentButton = document.createElement("button");
+            deleteCommentButton.innerHTML = "Delete Comment";
+            deleteCommentButton.addEventListener('click', function(e) {
+              removeComment(comment.commentID);
+              location.reload();
+            });
+
+            outputComment.appendChild(commentContent);
+            outputComment.appendChild(deleteCommentButton);
+            commentDiv.appendChild(outputComment);
+
+          }
+        });
+
+        entryDiv.appendChild(commentDiv);
+        entryOutput.appendChild(entryDiv);
+
+      });
+
+    })
+    .then(console.log);
+}
+
+
+getAllEntries();
+
+function updateEntry(entry) {
   let editDiv = document.createElement("div");
   editDiv.className = "modal";
   let editForm = document.createElement("form");
@@ -45,89 +182,17 @@ function updateEntry(entry){
 
   let modalBody = document.createElement("div");
   modalBody.className = "modal-body";
+  modalContent.appendChild(modalBody);
   modalBody.appendChild(editForm);
-  editDiv.appendChild(modalBody);
 
   let modalFooter = document.createElement("div");
   modalFooter.className = "modal-footer";
   modalFooter.appendChild(editButton);
-  editDiv.appendChild(modalFooter);
+  modalContent.appendChild(modalFooter)
 
   document.body.appendChild(editDiv);
+
 }
-
-function editEntry(entryID,body) {
-  // x-www-form-urlencoded
-  const postOptions = {
-    method: 'PATCH',
-    headers: {
-        "Content-Type" : "application/x-www-form-urlencoded"
-    },
-    body: body,
-    // MUCH IMPORTANCE!
-    credentials: 'include'
-  }
-
-  fetch('api/entries/' + entryID, postOptions)
-  .then(res => res.json())
-  .then(console.log);
-}
-
-function getAllEntries() {
-  let entryOutput = document.getElementById('entryOutput');
-  fetch("api/entries")
-    .then(res => res.json())
-    .then(function(data) {
-
-      allEntries = data;
-
-      return data.data.forEach(obj => {
-        let entryDiv = document.createElement("div");
-        entryDiv.classList.add("text-center");
-        entryDiv.id = obj.entryID;
-
-        let entryTitle = document.createElement("h3");
-        entryTitle.innerHTML = obj.title;
-        entryDiv.appendChild(entryTitle);
-
-        let entryContent = document.createElement("p");
-        entryContent.innerHTML = obj.content;
-        entryDiv.appendChild(entryContent);
-
-        let deleteButton = document.createElement("button");
-        deleteButton.innerHTML = "Delete";
-        deleteButton.addEventListener('click', function(e) {
-            e.preventDefault()
-            const removeID = this.parentElement.id;
-            const remove = allEntries.data.find(filterEntry => filterEntry.entryID === removeID);
-            removeEntry(removeID);
-            console.log(remove.entryID);
-            location.reload();
-        });
-
-        entryDiv.appendChild(deleteButton);
-
-        let updateButton = document.createElement("button");
-        updateButton.innerHTML = "Edit";
-        updateButton.addEventListener('click', function(e) {
-            const editID = this.parentElement.id;
-            const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
-            updateEntry(entry);
-            const modal = document.getElementsByClassName("modal")[0];
-            modal.style.display = "block";
-            console.log(entry);
-
-        });
-
-        entryDiv.appendChild(updateButton);
-        entryOutput.appendChild(entryDiv);
-      });
-    })
-    .then(console.log);
-}
-
-getAllEntries();
-
 
 function postEntry() {
   // x-www-form-urlencoded
@@ -147,12 +212,30 @@ function postEntry() {
 
   fetch('api/entries', postOptions)
     .then(res => res.json())
+    .then(console.log);
 }
 
+function editEntry(entryID, body) {
+  // x-www-form-urlencoded
+  const postOptions = {
+    method: 'PATCH',
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: body,
+    // MUCH IMPORTANCE!
+    credentials: 'include'
+  }
+
+  fetch('api/entries/' + entryID, postOptions)
+    .then(res => res.json())
+    .then(console.log);
+}
 
 function removeEntry(entryID) {
-  fetch("api/entries/" + entryID,{
-     method: "DELETE"})
+  fetch("api/entries/" + entryID, {
+      method: "DELETE"
+    })
     .then(res => res.json())
     .then(console.log);
 }
@@ -164,6 +247,7 @@ entryForm.addEventListener('submit', (e) => {
   entryForm.reset();
   location.reload();
 });
+
 
 
 

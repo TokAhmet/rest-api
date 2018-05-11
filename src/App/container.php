@@ -81,4 +81,9 @@ $container['entries'] = function ($c) {
     return $entryControllers;
 };
 
+$container['comments'] = function ($c) {
+    $commentControllers = new \App\Controllers\CommentController($c->get('db'));
+    return $commentControllers;
+};
+
 return $container;

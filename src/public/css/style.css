@@ -28,7 +28,6 @@ body, html {
 .modal-content {
   position: relative;
   background-color: red;
-  color: #fff;
   margin: auto;
   padding: 0;
   width: 40%;
@@ -44,7 +43,7 @@ body, html {
   text-align: center;
 }
 
-.modal-body input {
+.modal-body input, .modal-body textarea {
   padding: 1rem;
   margin: 1rem;
   width: 90%;
@@ -53,7 +52,7 @@ body, html {
 .modal-footer {
   padding: 2px 16px;
   color: white;
-  min-height: 3rem;
+  min-height: 6rem;
 }
 
 .modal-footer button {
@@ -65,6 +64,8 @@ body, html {
   border: 0;
   border-radius: 10px;
   padding: 6px;
+  margin: 10px;
+  width: 20%;
   font-weight: bold;
 }
 
