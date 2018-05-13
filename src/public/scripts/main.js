@@ -1,5 +1,6 @@
 let allEntries = [];
 let allComments = [];
+let test;
 
 function main(){
 	fetch('api/facebook')
@@ -12,6 +13,14 @@ function getAllUsers(){
 	.then(res => res.json())
 	.then(console.log);
 }
+
+function getLimit() {
+	fetch('api/entries/limit/' + test)
+	.then(res => res.json())
+	.then(console.log);
+}
+
+getLimit();
 
 function removeEntry(entryID) {
 	fetch('api/entries/' + entryID,

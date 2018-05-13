@@ -94,6 +94,17 @@ $app->get('/logout', function ($request, $response, $args) {
  */
 $app->group('/api', function () use ($app) {
 
+    $app->get('/entries/limit/{amount}', function ($request, $response, $args) {
+        $amount = $args['amount'];
+        $limitEntry = $this->entries->getLimit($amount);
+        return $response->withJson(['data' => $limitEntry]);
+    });
+
+/*     $app->get('/entries/limit/{amount}', function ($request, $response, $args) {
+        $limitEntries = $this->entries->getEntryLimit($args['amount']);
+        return $response->withJson(['data' => $limitEntries]);
+    }); */
+   
     // GET http://localhost:XXXX/api/todos
     $app->get('/entries', function ($request, $response, $args) {
         /**

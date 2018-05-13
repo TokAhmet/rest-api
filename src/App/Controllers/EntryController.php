@@ -20,6 +20,14 @@ class EntryController
         $this->db = $pdo;
     }
 
+    public function getLimit(int $amount) 
+    {
+        $getLimit = $this->db->prepare("SELECT * FROM `entries` LIMIT :amount");
+        $getLimit->bindParam(':amount', $amount, \PDO::PARAM_INT);
+        $getLimit->execute();
+        return $getLimit->fetchAll();
+    }
+
     public function getAll()
     {
         $getAll = $this->db->prepare('SELECT * FROM entries');
