@@ -13,13 +13,25 @@ function getAllUsers() {
     .then(console.log);
 }
 
+function getComments() {
+  fetch("api/comments")
+  .then(res => res.json())
+  .then(function(data) {
+
+    allComments = data;
+    console.log(allComments);
+
+  });
+}
+
+getComments();
+
 function postComment(entryID, commentContent) {
   // x-www-form-urlencoded
   const formData = new FormData();
 
   formData.append('entryID', entryID);
   formData.append("content", commentContent);
-
 
   const postOptions = {
     method: 'POST',
@@ -32,20 +44,6 @@ function postComment(entryID, commentContent) {
     .then(res => res.json())
     .then(console.log);
 }
-
-function getComments() {
-
-  fetch("api/comments")
-    .then(res => res.json())
-    .then(function(data) {
-
-      allComments = data;
-      console.log(allComments);
-
-    });
-}
-
-getComments();
 
 function removeComment(commentID) {
   fetch("api/comments/" + commentID, {
@@ -146,7 +144,6 @@ function getAllEntries() {
     .then(console.log);
 }
 
-
 getAllEntries();
 
 function updateEntry(entry) {
@@ -202,7 +199,6 @@ function postEntry() {
   formData.append("title", title);
   formData.append('content', content);
 
-
   const postOptions = {
     method: 'POST',
     body: formData,
@@ -216,7 +212,6 @@ function postEntry() {
 }
 
 function editEntry(entryID, body) {
-  // x-www-form-urlencoded
   const postOptions = {
     method: 'PATCH',
     headers: {
@@ -247,13 +242,3 @@ entryForm.addEventListener('submit', (e) => {
   entryForm.reset();
   location.reload();
 });
-
-
-
-
-// const form = document.getElementById('newTodo');
-// form.addEventListener('submit', function(e) {
-//   e.preventDefault();
-//   const formData = new FormData(this);
-// });
-//

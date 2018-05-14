@@ -1,6 +1,6 @@
 <div class="container">
   <h1 class="text-center">Entries</h1>
-  <form class="form-horizontal" action="" method="POST" id="entryForm">
+  <form class="form-horizontal" method="POST" id="entryForm">
     <div class="form-group">
       <label class="control-label col-sm-4" for="title">Titel:</label>
       <div class="col-sm-5">

@@ -11,6 +11,14 @@ class UserController
         $this->db = $pdo;
     }
 
+    public function getLimit($amount)
+    {
+        $getLimit = $this->db->prepare('SELECT * FROM users LIMIT :amount');
+        $getLimit->bindParam(':amount', $amount, \PDO::PARAM_INT);
+        $getLimit->execute();
+        return $getLimit->fetchAll();
+    }
+
     public function getAll()
     {
         $getAllUsers = $this->db->prepare("SELECT * FROM users");
