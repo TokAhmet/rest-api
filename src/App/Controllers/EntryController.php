@@ -9,10 +9,10 @@ class EntryController
     /**
      * Dependeny Injection (DI): http://www.phptherightway.com/#dependency_injection
      * If this class relies on a database-connection via PDO we inject that connection
-     * into the class at start. If we do this TodoController will be able to easily
+     * into the class at start. If we do this EntryController will be able to easily
      * reference the PDO with '$this->db' in ALL functions INSIDE the class
      * This class is later being injected into our container inside of 'App/container.php'
-     * This results in we being able to call '$this->get('Todos')' to call this class
+     * This results in we being able to call '$this->get('entries')' to call this class
      * inside of our routes.
      */
     public function __construct(\PDO $pdo)
@@ -47,6 +47,13 @@ class EntryController
         $getOne = $this->db->prepare('SELECT * FROM entries WHERE entryID = :id');
         $getOne->execute([':id' => $id]);
         return $getOne->fetch();
+    }
+
+    public function getEntryByTitle($title)
+    {
+        $getEntryByTitle = $this->db->prepare('SELECT * FROM entries WHERE title = :title');
+        $getEntryByTitle->execute([':title' => $title]);
+        return $getEntryByTitle->fetchAll();
     }
 
     public function editEntry($entryID, $title, $content)
@@ -90,7 +97,7 @@ class EntryController
 
         /**
          * A INSERT INTO does not return the created object. If we want to return it to the user
-         * that has posted the todo we must build it ourself or fetch it after we have inserted it
+         * that has posted the entry we must build it ourself or fetch it after we have inserted it
          * We can always get the last inserted row in a database by calling 'lastInsertId()'-function
          */
         return [

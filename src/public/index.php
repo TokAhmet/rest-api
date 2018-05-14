@@ -104,15 +104,15 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(['data' => $entriesFromUser]);
     });
 
-/*     $app->get('/entries/limit/{amount}', function ($request, $response, $args) {
-        $limitEntries = $this->entries->getEntryLimit($args['amount']);
-        return $response->withJson(['data' => $limitEntries]);
-    }); */
+    $app->get('/entries/title/{title}', function ($request, $response, $args) {
+        $entryByTitle = $this->entries->getEntryByTitle($args['title']);
+        return $response->withJson(['data' => $entryByTitle]);
+    });
    
-    // GET http://localhost:XXXX/api/todos
+    // GET http://localhost:XXXX/api/entries
     $app->get('/entries', function ($request, $response, $args) {
         /**
-         * $this->get('Todos') is available to us because we injected it into the container
+         * $this->get('entries') is available to us because we injected it into the container
          * in 'App/container.php'. This makes it easier for us to call the database
          * inside our routes.
          */
@@ -125,7 +125,7 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(['data' => $allEntries]);
     });
 
-    // POST http://localhost:XXXX/api/todos
+    // POST http://localhost:XXXX/api/entries
     $app->post('/entries', function ($request, $response, $args) {
         /**
          * Everything sent in 'body' when doing a POST-request can be
@@ -137,11 +137,11 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(['data' => $newEntry]);
     });
 
-    // GET http://localhost:XXXX/api/todos/5
+    // GET http://localhost:XXXX/api/entries/5
     $app->get('/entries/{id}', function ($request, $response, $args) {
         /**
-         * {id} is a placeholder for whatever you write after todos. So if we write
-         * /todos/4 the {id} will be 4. This gets saved in the $args array
+         * {id} is a placeholder for whatever you write after entries. So if we write
+         * /entries/4 the {id} will be 4. This gets saved in the $args array
          * $args['id'] === 4
          * The name inside of '$args' must match the placeholder in the url
          * https://www.slimframework.com/docs/v3/objects/router.html#route-placeholders
@@ -194,7 +194,7 @@ $app->group('/api', function () use ($app) {
 
     $app->get('/comments', function ($request, $response, $args) {
         /**
-         * $this->get('Todos') is available to us because we injected it into the container
+         * $this->get('comments') is available to us because we injected it into the container
          * in 'App/container.php'. This makes it easier for us to call the database
          * inside our routes.
          */
@@ -207,7 +207,7 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(['data' => $allComments]);
     });
 
-    // POST http://localhost:XXXX/api/todos
+    // POST http://localhost:XXXX/api/comments
     $app->post('/comments', function ($request, $response, $args) {
         /**
          * Everything sent in 'body' when doing a POST-request can be
@@ -219,11 +219,11 @@ $app->group('/api', function () use ($app) {
         return $response->withJson(['data' => $newComment]);
     });
 
-    // GET http://localhost:XXXX/api/todos/5
+    // GET http://localhost:XXXX/api/comments/5
     $app->get('/comments/{id}', function ($request, $response, $args) {
         /**
-         * {id} is a placeholder for whatever you write after todos. So if we write
-         * /todos/4 the {id} will be 4. This gets saved in the $args array
+         * {id} is a placeholder for whatever you write after comments. So if we write
+         * /comments/4 the {id} will be 4. This gets saved in the $args array
          * $args['id'] === 4
          * The name inside of '$args' must match the placeholder in the url
          * https://www.slimframework.com/docs/v3/objects/router.html#route-placeholders
