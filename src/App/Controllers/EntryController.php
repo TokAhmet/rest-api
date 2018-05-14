@@ -28,6 +28,13 @@ class EntryController
         return $getLimit->fetchAll();
     }
 
+    public function getEntriesFromUser($userID)
+    {
+        $getEntriesFromUser = $this->db->prepare("SELECT * FROM entries where createdBy = :userID");
+        $getEntriesFromUser->execute([':userID' => $userID]);
+        return $getEntriesFromUser->fetchAll();
+    }
+
     public function getAll()
     {
         $getAll = $this->db->prepare('SELECT * FROM entries');

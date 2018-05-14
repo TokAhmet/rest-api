@@ -34,6 +34,29 @@ class CommentController
         return $getOne->fetch();
     }
 
+    public function getLimit(int $amount) 
+    {
+        $getLimit = $this->db->prepare("SELECT * FROM comments LIMIT :amount");
+        $getLimit->bindParam(':amount', $amount, \PDO::PARAM_INT);
+        $getLimit->execute();
+        return $getLimit->fetchAll();
+    }
+
+    public function getEntryComments($entryID) 
+    {
+        $getEntryComments = $this->db->prepare("SELECT * FROM comments WHERE entryID = :entryID");
+        $getEntryComments->execute([':entryID' => $entryID]);
+        return $getEntryComments->fetchAll();
+    }
+
+    public function getEntryCommentsByLimit(int $entryID, int $amount) 
+    {
+        $getEntryCommentsByLimit = $this->db->prepare("SELECT * FROM comments WHERE entryID = :entryID LIMIT :amount");
+        $getEntryCommentsByLimit->bindParam(':entryID', $entryID, \PDO::PARAM_INT);
+        $getEntryCommentsByLimit->bindParam(':amount', $amount, \PDO::PARAM_INT);
+        $getEntryCommentsByLimit->execute();
+    }
+
     public function removeComment($commentID)
     {
 

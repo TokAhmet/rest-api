@@ -95,9 +95,13 @@ $app->get('/logout', function ($request, $response, $args) {
 $app->group('/api', function () use ($app) {
 
     $app->get('/entries/limit/{amount}', function ($request, $response, $args) {
-        $amount = $args['amount'];
-        $limitEntry = $this->entries->getLimit($amount);
+        $limitEntry = $this->entries->getLimit($args['amount']);
         return $response->withJson(['data' => $limitEntry]);
+    });
+
+    $app->get('/users/{userID}/entries', function ($request, $response, $args) {
+        $entriesFromUser = $this->entries->getEntriesFromUser($args['userID']);
+        return $response->withJson(['data' => $entriesFromUser]);
     });
 
 /*     $app->get('/entries/limit/{amount}', function ($request, $response, $args) {
@@ -167,7 +171,28 @@ $app->group('/api', function () use ($app) {
         return $response->withJson($allUsers);
     });
 
-        $app->get('/comments', function ($request, $response, $args) {
+    $app->get('/users/limit/{amount}', function ($request, $response, $args) {
+        $limitEntry = $this->users->getLimit($args['amount']);
+        return $response->withJson(['data' => $limitEntry]);
+    });
+
+    $app->get('/comments/limit/{amount}', function ($request, $response, $args) {
+        $amount = $args['amount'];
+        $limitEntry = $this->comments->getLimit($amount);
+        return $response->withJson(['data' => $limitEntry]);
+    });
+
+    $app->get('/entries/{entryID}/comments', function ($request, $response, $args) {
+        $entryComments = $this->comments->getEntryComments($args['entryID']);
+        return $response->withJson(['data' => $entryComments]);
+    });
+
+    $app->get('/entries/{entryID}/comments/limit/{amount}', function ($request, $response, $args) {
+        $entryCommentsByLimit = $this->comments->getEntryCommentsByLimit($args['entryID'], $args['amount']);
+        return $response->withJson(['data' => $entryCommentsByLimit]);
+    });
+
+    $app->get('/comments', function ($request, $response, $args) {
         /**
          * $this->get('Todos') is available to us because we injected it into the container
          * in 'App/container.php'. This makes it easier for us to call the database

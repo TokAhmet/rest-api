@@ -21,13 +21,21 @@ class UserController
 
     public function getOne($id)
     {
-        $getOneUser = $this->db->prepare("SELECT * FROM users WHERE id = :id");
+        $getOneUser = $this->db->prepare("SELECT * FROM users WHERE userID = :id");
         $getOneUser->execute([
           ":id" => $id
         ]);
         // Fetch -> single resource
         $oneUser = $getOneUser->fetch();
         return $oneUser;
+    }
+
+    public function getLimit(int $amount) 
+    {
+        $getLimit = $this->db->prepare("SELECT * FROM users LIMIT :amount");
+        $getLimit->bindParam(':amount', $amount, \PDO::PARAM_INT);
+        $getLimit->execute();
+        return $getLimit->fetchAll();
     }
 
     public function store($username, $password)

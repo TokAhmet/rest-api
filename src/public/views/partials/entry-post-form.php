@@ -1,5 +1,5 @@
 <div class="row mt-3">
-    <form class="col-12 m-auto" action="" method="POST" id="postForm">
+    <form class="col-12 m-auto" method="POST" id="postForm">
         <div class="form-group">
             <label for="title">Title</label>
             <input type="text" class="form-control" id="title" name="title" placeholder="Enter title">
