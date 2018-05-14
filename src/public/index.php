@@ -91,7 +91,12 @@ $app->get('/logout', function ($request, $response, $args) {
 */
 $app->group('/api', function () use ($app) {
 
-  $app->get('/entries/limit/{amount}', function ($request, $response, $args) {  
+  $app->get('/entries/title/{title}', function ($request, $response, $args) {
+    $getTitle = $this->entries->getTitle($args['title']);
+    return $response->withJson(['data' => $getTitle]);
+  });
+
+  $app->get('/entries/limit/{amount}', function ($request, $response, $args) {
     $limitEntry = $this->entries->getLimit($args['amount']);
     return $response->withJson(['data' => $limitEntry]);
   });
@@ -101,10 +106,10 @@ $app->group('/api', function () use ($app) {
     return $response->withJson(['data', $getUserEntries]);
   });
 
-  // GET http://localhost:XXXX/api/todos
+  // GET http://localhost:XXXX/api/entries
   $app->get('/entries', function ($request, $response, $args) {
     /**
-    * $this->get('Todos') is available to us because we injected it into the container
+    * $this->get('entries') is available to us because we injected it into the container
     * in 'App/container.php'. This makes it easier for us to call the database
     * inside our routes.
     */
@@ -117,11 +122,11 @@ $app->group('/api', function () use ($app) {
     return $response->withJson(['data' => $allEntries]);
   });
 
-  // GET http://localhost:XXXX/api/todos/5
+  // GET http://localhost:XXXX/api/entries/5
   $app->get('/entries/{id}', function ($request, $response, $args) {
     /**
-    * {id} is a placeholder for whatever you write after todos. So if we write
-    * /todos/4 the {id} will be 4. This gets saved in the $args array
+    * {id} is a placeholder for whatever you write after entries. So if we write
+    * /entries/4 the {id} will be 4. This gets saved in the $args array
     * $args['id'] === 4
     * The name inside of '$args' must match the placeholder in the url
     * https://www.slimframework.com/docs/v3/objects/router.html#route-placeholders
@@ -131,7 +136,7 @@ $app->group('/api', function () use ($app) {
     return $response->withJson(['data' => $singleEntry]);
   });
 
-  // POST http://localhost:XXXX/api/todos
+  // POST http://localhost:XXXX/api/entries
   $app->post('/entries', function ($request, $response, $args) {
     /**
     * Everything sent in 'body' when doing a POST-request can be
@@ -185,7 +190,7 @@ $app->group('/api', function () use ($app) {
     $getEntryCommentsByLimit = $this->comments->getCommentsFromEntryByLimit($args['entryID'], $args['amount']);
     return $response->withJson(['data', $getEntryCommentsByLimit]);
   });
-  // GET http://localhost:XXXX/api/todos
+  // GET http://localhost:XXXX/api/comments
   $app->get('/comments', function ($request, $response, $args) {
     $allComments = $this->comments->getAll();
     return $response->withJson(['data' => $allComments]);
@@ -199,8 +204,8 @@ $app->group('/api', function () use ($app) {
 
   $app->post('/comments', function ($request, $response, $args) {
     $body = $request->getParsedBody();
-    $newTodo = $this->comments->add($body,$_SESSION["userID"]);
-    return $response->withJson(['data' => $newTodo]);
+    $newComment = $this->comments->add($body,$_SESSION["userID"]);
+    return $response->withJson(['data' => $newComment]);
   });
 
   $app->delete("/comments/{id}", function($request, $response, $args) {

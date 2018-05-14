@@ -72,7 +72,7 @@ class CommentController
 
         /**
          * A INSERT INTO does not return the created object. If we want to return it to the user
-         * that has posted the todo we must build it ourself or fetch it after we have inserted it
+         * that has posted the comments we must build it ourself or fetch it after we have inserted it
          * We can always get the last inserted row in a database by calling 'lastInsertId()'-function
          */
         return [
