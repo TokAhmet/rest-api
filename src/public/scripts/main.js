@@ -17,13 +17,12 @@ function searchByTitle(title){
 	});
 }
 
+
 function searchController(){
-	let searchForm = document.querySelector('form');
-	let button = searchForm.querySelector('button');
-	
-	button.addEventListener('click', function(e){
+	let searchForm = document.getElementById('searchForm');
+	searchForm.addEventListener('submit', (e) => {
 		e.preventDefault();
-		let title = searchForm.querySelector('input').value;
+		let title = document.getElementById('searchValue').value;
 		searchByTitle(title);
 	})
 }
