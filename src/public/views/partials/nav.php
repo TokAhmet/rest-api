@@ -11,6 +11,16 @@ if (isset($_SESSION["loggedIn"])): ?>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="" id="navLogout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
     </ul>
+    <form class="navbar-form navbar-right" action="" id="titleSearch">
+     <div class="input-group">
+       <input type="text" class="form-control" placeholder="Search" id="titleInput">
+       <div class="input-group-btn">
+         <button class="btn btn-default" type="submit">
+           <i class="glyphicon glyphicon-search"></i>
+         </button>
+       </div>
+     </div>
+   </form>
   </div>
 </nav>
 <?php endif; ?>
@@ -25,6 +35,6 @@ if (isset($_SESSION["loggedIn"])): ?>
       <li><a href="login"><span class="glyphicon glyphicon-user"></span> Login</a></li>
       <li><a href="register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
     </ul>
-  </div>
+</div>
 </nav>
 <?php endif; ?>

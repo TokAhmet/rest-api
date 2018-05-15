@@ -13,15 +13,36 @@ function getAllUsers() {
     .then(console.log);
 }
 
+function getTitle(titleInput) {
+  let entryOutput = document.getElementById('entryOutput');
+  entryOutput.innerHTML = "";
+  fetch('api/entries/title/' + titleInput)
+    .then(res => res.json())
+    .then(function(data) {
+      createEntry(data);
+    })
+}
+
+function searchForTitle() {
+  let titleForm = document.getElementById('titleSearch');
+  titleForm.addEventListener('submit', function(e) {
+    let titleInput = document.getElementById('titleInput').value;
+    e.preventDefault();
+    getTitle(titleInput);
+  });
+}
+
+searchForTitle();
+
 function getComments() {
   fetch("api/comments")
-  .then(res => res.json())
-  .then(function(data) {
+    .then(res => res.json())
+    .then(function(data) {
 
-    allComments = data;
-    console.log(allComments);
+      allComments = data;
+      console.log(allComments);
 
-  });
+    });
 }
 
 getComments();
@@ -54,92 +75,10 @@ function removeComment(commentID) {
 }
 
 function getAllEntries() {
-  let entryOutput = document.getElementById('entryOutput');
   fetch("api/entries")
     .then(res => res.json())
     .then(function(data) {
-
-      allEntries = data;
-
-      return data.data.forEach(obj => {
-        let entryDiv = document.createElement("div");
-        entryDiv.classList.add("text-center");
-        entryDiv.id = obj.entryID;
-
-        let entryTitle = document.createElement("h3");
-        entryTitle.innerHTML = obj.title;
-        entryDiv.appendChild(entryTitle);
-
-        let entryContent = document.createElement("p");
-        entryContent.innerHTML = obj.content;
-        entryDiv.appendChild(entryContent);
-
-        let deleteEntryButton = document.createElement("button");
-        deleteEntryButton.innerHTML = "Delete";
-        deleteEntryButton.addEventListener('click', function(e) {
-          removeEntry(obj.entryID);
-          console.log(obj.entryID);
-          location.reload();
-        });
-
-        entryDiv.appendChild(deleteEntryButton);
-
-        let updateButton = document.createElement("button");
-        updateButton.innerHTML = "Edit";
-        updateButton.addEventListener('click', function(e) {
-          const editID = this.parentElement.id;
-          const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
-          updateEntry(entry);
-          const modal = document.getElementsByClassName("modal")[0];
-          modal.style.display = "block";
-          console.log(entry);
-
-        });
-
-        entryDiv.appendChild(updateButton);
-
-        let commentDiv = document.createElement("div");
-        let commentTextarea = document.createElement("textarea");
-        commentDiv.appendChild(commentTextarea);
-
-        let addCommentButton = document.createElement("button");
-        addCommentButton.innerHTML = "Add Comment";
-
-        addCommentButton.addEventListener('click', function(e) {
-          const entryID = this.parentElement.parentElement.id;
-          postComment(entryID, commentTextarea.value);
-          location.reload();
-        });
-
-        commentDiv.appendChild(addCommentButton);
-
-        allComments.data.forEach(comment => {
-          if (comment.entryID === obj.entryID) {
-
-            let outputComment = document.createElement("div");
-            outputComment.classList.add("text-center");
-            let commentContent = document.createElement("p");
-            commentContent.innerHTML = comment.content;
-
-            let deleteCommentButton = document.createElement("button");
-            deleteCommentButton.innerHTML = "Delete Comment";
-            deleteCommentButton.addEventListener('click', function(e) {
-              removeComment(comment.commentID);
-              location.reload();
-            });
-
-            outputComment.appendChild(commentContent);
-            outputComment.appendChild(deleteCommentButton);
-            commentDiv.appendChild(outputComment);
-
-          }
-        });
-
-        entryDiv.appendChild(commentDiv);
-        entryOutput.appendChild(entryDiv);
-
-      });
-
+      createEntry(data);
     })
     .then(console.log);
 }
@@ -164,7 +103,7 @@ function updateEntry(entry) {
 
   let editButton = document.createElement("button");
   editButton.innerHTML = "Edit";
-  editButton.addEventListener('click', function(e) {
+  editButton.addEventListener('submit', function(e) {
     e.preventDefault();
     const body = `content=${contentInput.value}&title=${titleInput.value}`;
     editEntry(entry.entryID, body);
@@ -233,6 +172,92 @@ function removeEntry(entryID) {
     })
     .then(res => res.json())
     .then(console.log);
+}
+
+function createEntry(data) {
+  let entryOutput = document.getElementById('entryOutput');
+
+  allEntries = data;
+
+  return data.data.forEach(obj => {
+    let entryDiv = document.createElement("div");
+    entryDiv.classList.add("text-center");
+    entryDiv.id = obj.entryID;
+
+    let entryTitle = document.createElement("h3");
+    entryTitle.innerHTML = obj.title;
+    entryDiv.appendChild(entryTitle);
+
+    let entryContent = document.createElement("p");
+    entryContent.innerHTML = obj.content;
+    entryDiv.appendChild(entryContent);
+
+    let deleteEntryButton = document.createElement("button");
+    deleteEntryButton.innerHTML = "Delete";
+    deleteEntryButton.addEventListener('click', function(e) {
+      removeEntry(obj.entryID);
+      console.log(obj.entryID);
+      location.reload();
+    });
+
+    entryDiv.appendChild(deleteEntryButton);
+
+    let updateButton = document.createElement("button");
+    updateButton.innerHTML = "Edit";
+    updateButton.addEventListener('click', function(e) {
+      const editID = this.parentElement.id;
+      const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
+      updateEntry(entry);
+      const modal = document.getElementsByClassName("modal")[0];
+      modal.style.display = "block";
+      console.log(entry);
+
+    });
+
+    entryDiv.appendChild(updateButton);
+
+    let commentDiv = document.createElement("div");
+    let commentTextarea = document.createElement("textarea");
+    commentDiv.appendChild(commentTextarea);
+
+    let addCommentButton = document.createElement("button");
+    addCommentButton.innerHTML = "Add Comment";
+
+    addCommentButton.addEventListener('click', function(e) {
+      const entryID = this.parentElement.parentElement.id;
+      postComment(entryID, commentTextarea.value);
+      location.reload();
+    });
+
+    commentDiv.appendChild(addCommentButton);
+
+    allComments.data.forEach(comment => {
+      if (comment.entryID === obj.entryID) {
+
+        let outputComment = document.createElement("div");
+        outputComment.classList.add("text-center");
+        let commentContent = document.createElement("p");
+        commentContent.innerHTML = comment.content;
+
+        let deleteCommentButton = document.createElement("button");
+        deleteCommentButton.innerHTML = "Delete Comment";
+        deleteCommentButton.addEventListener('click', function(e) {
+          removeComment(comment.commentID);
+          location.reload();
+        });
+
+        outputComment.appendChild(commentContent);
+        outputComment.appendChild(deleteCommentButton);
+        commentDiv.appendChild(outputComment);
+
+      }
+    });
+
+    entryDiv.appendChild(commentDiv);
+    entryOutput.appendChild(entryDiv);
+
+  });
+
 }
 
 const entryForm = document.getElementById('entryForm');
