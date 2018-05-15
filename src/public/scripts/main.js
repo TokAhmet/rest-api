@@ -7,6 +7,28 @@ function main(){
 	.then(console.log);
 }
 
+function searchByTitle(title){
+	let entryOutput = document.getElementById('entry');
+	entryOutput.innerHTML = "";
+	fetch('api/entries/title/' + title)
+	.then(res => res.json())
+	.then(function(entries) {
+		createEntry(entries);
+	});
+}
+
+function searchController(){
+	let searchForm = document.querySelector('form');
+	let button = searchForm.querySelector('button');
+	
+	button.addEventListener('click', function(e){
+		e.preventDefault();
+		let title = searchForm.querySelector('input').value;
+		searchByTitle(title);
+	})
+}
+searchController();
+
 function getAllUsers(){
 	fetch('api/users')
 	.then(res => res.json())
@@ -45,6 +67,79 @@ function editEntry(entryID, body) {
 		});
 }
 
+function createEntry(entries){
+	let entryOutput = document.getElementById('entry');
+
+	allEntries = entries;
+
+	return entries.data.forEach(entry => {
+		let entryDiv = document.createElement('div');
+		let entryTitle = document.createElement('h3');
+		entryDiv.id = entry.entryID;
+		entryTitle.innerHTML = entry.title;
+		entryDiv.appendChild(entryTitle);
+
+		let entryContent = document.createElement('p');
+		entryContent.innerHTML = entry.content;
+		entryDiv.appendChild(entryContent);
+
+		let entryDeleteButton = document.createElement('button');
+		entryDeleteButton.innerHTML = 'Delete';
+		entryDeleteButton.addEventListener('click', function (e) {
+			removeEntry(entry.entryID);
+			location.reload();
+		})
+		entryDiv.appendChild(entryDeleteButton);
+
+		let entryEditButton = document.createElement('button');
+		entryEditButton.innerHTML = 'Edit';
+		entryEditButton.addEventListener('click', function (e) {
+			const editID = this.parentElement.id;
+			const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
+			createEditForm(entry);
+			const modal = document.getElementsByClassName("modal")[0];
+			modal.style.display = "block";
+			console.log(entry);
+		})
+		entryDiv.appendChild(entryEditButton);
+
+		let commentDiv = document.createElement('div');
+		let commentTextarea = document.createElement('textarea');
+		commentDiv.appendChild(commentTextarea);
+
+		let addCommentButton = document.createElement('button');
+		addCommentButton.innerHTML = "Add Comment";
+		addCommentButton.addEventListener('click', function (e) {
+			const entryID = this.parentElement.parentElement.id;
+			postComment(entryID, commentTextarea.value);
+			location.reload();
+		});
+		commentDiv.appendChild(addCommentButton);
+
+		allComments.data.forEach(comment => {
+			if (comment.entryID === entry.entryID) {
+				let postedCommentDiv = document.createElement('div');
+				let commentContent = document.createElement('p');
+				commentContent.innerHTML = comment.content;
+
+				let deleteCommentButton = document.createElement('button');
+				deleteCommentButton.innerHTML = 'Delete Comment';
+				deleteCommentButton.addEventListener('click', (e) => {
+					removeComment(comment.commentID);
+					location.reload();
+				})
+
+				postedCommentDiv.appendChild(commentContent);
+				postedCommentDiv.appendChild(deleteCommentButton);
+				commentDiv.appendChild(postedCommentDiv);
+			}
+		});
+
+		entryDiv.appendChild(commentDiv);
+		entryOutput.appendChild(entryDiv);
+	});
+}
+
 function createEditForm(entry){
 	let formDiv = document.createElement('div');
 	let editForm = document.createElement('form');
@@ -73,6 +168,7 @@ function createEditForm(entry){
 		e.preventDefault();
 		const body = `content=${contentInput.value}&title=${titleInput.value}`;
 		editEntry(entry.entryID, body);
+		location.reload();
 	})
 	editForm.appendChild(formButton);
 	formDiv.appendChild(editForm);
@@ -114,78 +210,9 @@ function getAllEntries() {
 	fetch('api/entries')
 	.then(res => res.json())
 	.then(function (entries) {
-		allEntries = entries;
-
-		return entries.data.forEach(entry => {
-			let entryDiv = document.createElement('div');
-			let entryTitle = document.createElement('h3');
-			entryDiv.id = entry.entryID;
-			entryTitle.innerHTML = entry.title;
-			entryDiv.appendChild(entryTitle);
-			
-			let entryContent = document.createElement('p');
-			entryContent.innerHTML = entry.content;
-			entryDiv.appendChild(entryContent);
-			
-			let entryDeleteButton = document.createElement('button');
-			entryDeleteButton.innerHTML = 'Delete';
-			entryDeleteButton.addEventListener('click', function(e) {
-				removeEntry(entry.entryID);
-				location.reload();
-			})
-			entryDiv.appendChild(entryDeleteButton);
-
-			let entryEditButton = document.createElement('button');
-			entryEditButton.innerHTML = 'Edit';
-			entryEditButton.addEventListener('click', function(e) {
-				const editID = this.parentElement.id;
-				const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
-				createEditForm(entry);
-				const modal = document.getElementsByClassName("modal")[0];
-				modal.style.display = "block";
-				console.log(entry);
-			})
-			entryDiv.appendChild(entryEditButton);			
-
-			let commentDiv = document.createElement('div');
-			let commentTextarea = document.createElement('textarea');
-			commentDiv.appendChild(commentTextarea);
-			
-			let addCommentButton = document.createElement('button');
-			addCommentButton.innerHTML = "Add Comment";
-			addCommentButton.addEventListener('click', function(e) {
-				const entryID = this.parentElement.parentElement.id;
-				postComment(entryID, commentTextarea.value);
-				location.reload();
-			});
-			commentDiv.appendChild(addCommentButton);
-
-			allComments.data.forEach(comment => {
-				if(comment.entryID === entry.entryID) {
-					let postedCommentDiv = document.createElement('div');
-					let commentContent = document.createElement('p');
-					commentContent.innerHTML = comment.content;
-					
-					let deleteCommentButton = document.createElement('button');
-					deleteCommentButton.innerHTML = 'Delete Comment';
-					deleteCommentButton.addEventListener('click', (e) => {
-						removeComment(comment.commentID);
-						location.reload();
-					})
-					
-					postedCommentDiv.appendChild(commentContent);
-					postedCommentDiv.appendChild(deleteCommentButton);
-					commentDiv.appendChild(postedCommentDiv);
-				}
-			});
-
-			entryDiv.appendChild(commentDiv);			
-			entryOutput.appendChild(entryDiv);		
-		});
-	})
-	.then(console.log);
+		createEntry(entries);
+	});
 }
-
 getAllEntries();
 
 function postTodo(){

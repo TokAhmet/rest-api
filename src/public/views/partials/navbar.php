@@ -25,6 +25,14 @@
 				<li class="nav-item">
 					<a id="logoutButton" class="nav-link" href="">Logout</a>
 				</li>
+				<form>
+					<div class="input-group mb-3">
+						<input type="text" class="form-control" placeholder="Title name" id="searchValue">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="click">Search for title</button>
+						</div>
+					</div>
+				</form>
 
 				<?php endif; ?>
 				
