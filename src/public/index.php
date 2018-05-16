@@ -236,6 +236,21 @@ $app->group('/api', function () use ($app) {
     $app->delete('/comments/{id}', function($request, $response, $args) {
         $this->comments->removeComment($args['id']);
     });
+
+    $app->get('/likes', function($request, $response, $args) {
+       $allLikes = $this->likes->getAll();
+       return $response->withJson(['data' => $allLikes]);
+    });
+
+    $app->post('/likes', function ($request, $response, $args) {
+        $body = $request->getParsedBody();
+        $newLike = $this->likes->add($body['entryID'], $_SESSION['userID']);
+        return $response->withJson(['data' => $newLike]);
+    });
+
+    $app->delete('/likes/{entryID}', function($request, $response, $args) {
+        $this->likes->removeLike($args['entryID'], $_SESSION['userID']);
+    });
 });
 
 $app->run();

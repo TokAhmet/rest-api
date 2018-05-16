@@ -7,6 +7,38 @@ function main(){
 	.then(console.log);
 }
 
+function getAllLikes(){
+	fetch('api/likes')
+	.then(res => res.json())
+	.then(console.log);
+}
+
+function removeLike(entryID) {
+	fetch('api/likes/' + entryID,
+		{ method: 'DELETE' })
+		.then(res => res.json())
+		.then(console.log);
+}
+
+function postLike(entryID) {
+	// x-www-form-urlencoded
+	const formData = new FormData();
+	formData.append('entryID', entryID);
+
+	const postOptions = {
+		method: 'POST',
+		body: formData,
+		// MUCH IMPORTANCE!
+		credentials: 'include'
+	}
+
+	fetch('api/likes', postOptions)
+		.then(res => res.json())
+		.then((newTodo) => {
+			document.body.insertAdjacentHTML('beforeend', newTodo.data.content);
+		});
+}
+
 function searchByTitle(title){
 	let entryOutput = document.getElementById('entry');
 	entryOutput.innerHTML = "";
@@ -101,6 +133,20 @@ function createEntry(entries){
 			console.log(entry);
 		})
 		entryDiv.appendChild(entryEditButton);
+
+		let likeButton = document.createElement('button');
+		likeButton.innerHTML = "Like";
+		likeButton.addEventListener('click', (e) => {
+			postLike(entry.entryID);
+		})
+		entryDiv.appendChild(likeButton);
+
+		let removeLikeButton = document.createElement('button');
+		removeLikeButton.innerHTML = "Remove like";
+		removeLikeButton.addEventListener('click', (e) => {
+			removeLike(entry.entryID);
+		})
+		entryDiv.appendChild(removeLikeButton);
 
 		let commentDiv = document.createElement('div');
 		let commentTextarea = document.createElement('textarea');
