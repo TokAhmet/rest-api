@@ -34,46 +34,6 @@ function searchForTitle() {
 
 searchForTitle();
 
-function getComments() {
-  fetch("api/comments")
-    .then(res => res.json())
-    .then(function(data) {
-
-      allComments = data;
-      console.log(allComments);
-
-    });
-}
-
-getComments();
-
-function postComment(entryID, commentContent) {
-  // x-www-form-urlencoded
-  const formData = new FormData();
-
-  formData.append('entryID', entryID);
-  formData.append("content", commentContent);
-
-  const postOptions = {
-    method: 'POST',
-    body: formData,
-    // MUCH IMPORTANCE!
-    credentials: 'include'
-  }
-
-  fetch('api/comments', postOptions)
-    .then(res => res.json())
-    .then(console.log);
-}
-
-function removeComment(commentID) {
-  fetch("api/comments/" + commentID, {
-      method: "DELETE"
-    })
-    .then(res => res.json())
-    .then(console.log);
-}
-
 function getAllEntries() {
   fetch("api/entries")
     .then(res => res.json())
@@ -179,48 +139,82 @@ function createEntry(data) {
 
   allEntries = data;
 
-  return data.data.forEach(obj => {
+  return data.data.forEach(async obj => {
     let entryDiv = document.createElement("div");
     entryDiv.classList.add("text-center");
+    entryDiv.classList.add("entryDiv");
     entryDiv.id = obj.entryID;
 
     let entryTitle = document.createElement("h3");
-    entryTitle.innerHTML = obj.title;
+    entryTitle.innerHTML = "Title: " + obj.title;
     entryDiv.appendChild(entryTitle);
 
     let entryContent = document.createElement("p");
-    entryContent.innerHTML = obj.content;
+    entryContent.innerHTML = "Content: " + obj.content;
     entryDiv.appendChild(entryContent);
-
-    let deleteEntryButton = document.createElement("button");
-    deleteEntryButton.innerHTML = "Delete";
-    deleteEntryButton.addEventListener('click', function(e) {
-      removeEntry(obj.entryID);
-      console.log(obj.entryID);
-      location.reload();
-    });
-
-    entryDiv.appendChild(deleteEntryButton);
 
     let updateButton = document.createElement("button");
     updateButton.innerHTML = "Edit";
+    updateButton.classList.add("btn-info");
     updateButton.addEventListener('click', function(e) {
       const editID = this.parentElement.id;
       const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
       updateEntry(entry);
       const modal = document.getElementsByClassName("modal")[0];
       modal.style.display = "block";
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
       console.log(entry);
 
     });
 
     entryDiv.appendChild(updateButton);
 
+    let deleteEntryButton = document.createElement("button");
+    deleteEntryButton.innerHTML = "Delete";
+    deleteEntryButton.classList.add("btn-danger");
+    deleteEntryButton.addEventListener('click', function(e) {
+      removeEntry(obj.entryID);
+      console.log(obj.entryID);
+      location.reload();
+
+    });
+
+    entryDiv.appendChild(deleteEntryButton);
+    const likeResponse = await getLikes(obj.entryID);
+    console.log(likeResponse.data);
+
+    if (likeResponse.data) {
+      let removeLikeButton = document.createElement("button");
+      removeLikeButton.innerHTML = "Remove Like";
+      removeLikeButton.classList.add("btn-danger");
+      removeLikeButton.addEventListener('click', (e) => {
+        removeLike(obj.entryID);
+      });
+
+      entryDiv.appendChild(removeLikeButton);
+
+    } else {
+      let likeButton = document.createElement("button");
+      likeButton.innerHTML = "Like";
+      likeButton.classList.add("btn-primary");
+      likeButton.addEventListener('click', (e) => {
+        postLike(obj.entryID);
+      });
+
+      entryDiv.appendChild(likeButton);
+    }
+
     let commentDiv = document.createElement("div");
     let commentTextarea = document.createElement("textarea");
+    commentTextarea.placeholder = "Write your Comment";
     commentDiv.appendChild(commentTextarea);
 
     let addCommentButton = document.createElement("button");
+    addCommentButton.classList.add("btn-success");
     addCommentButton.innerHTML = "Add Comment";
 
     addCommentButton.addEventListener('click', function(e) {
@@ -236,11 +230,13 @@ function createEntry(data) {
 
         let outputComment = document.createElement("div");
         outputComment.classList.add("text-center");
+        outputComment.classList.add("commentDiv");
         let commentContent = document.createElement("p");
         commentContent.innerHTML = comment.content;
 
         let deleteCommentButton = document.createElement("button");
         deleteCommentButton.innerHTML = "Delete Comment";
+        deleteCommentButton.classList.add("btn-danger");
         deleteCommentButton.addEventListener('click', function(e) {
           removeComment(comment.commentID);
           location.reload();
@@ -257,7 +253,6 @@ function createEntry(data) {
     entryOutput.appendChild(entryDiv);
 
   });
-
 }
 
 const entryForm = document.getElementById('entryForm');

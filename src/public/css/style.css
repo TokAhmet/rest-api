@@ -1,5 +1,67 @@
 body, html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  box-sizing: border-box;
+  animation: fadein 1s;
+}
+
+.container {
+  background: linear-gradient(to bottom, rgba(242, 249, 254, 1) 0%, rgba(214, 240, 253, 1) 100%);
+  border: 1px solid black;
+  box-shadow: 0 0 25px 0 #999999;
+  margin: 2rem auto;
+  width: 80%;
+}
+
+.entryDiv {
+  background: linear-gradient(to bottom, rgba(147, 206, 222, 1) 0%, rgba(117, 189, 209, 1) 41%, rgba(73, 165, 191, 1) 100%);
+  border: 1px solid black;
+  border-radius: 35px 0 35px 0;
+  box-shadow: 0 0 25px 0 #999999;
+  margin: 2rem auto;
+  width: 80%;
+}
+
+.entryDiv:nth-child(odd) {
+  border-radius: 0 35px 0 35px;
+}
+
+.entryDiv h3 {
+  margin: 2rem;
+  text-decoration: underline;
+}
+
+.entryDiv p {
+  font-size: 20px;
+  margin: 1rem;
+  padding: 0.5rem;
+}
+
+.entryDiv button {
+  margin: 1rem;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.entryDiv textarea {
+  border-radius: 5px;
+  display: block;
+  margin: 1rem auto;
+  padding: 1rem;
+  width: 50%;
+}
+
+.commentDiv {
+  background: linear-gradient(to bottom, rgba(242, 249, 254, 1) 0%, rgba(214, 240, 253, 1) 100%);
+  border: 2px solid black;
+  box-shadow: 0 0 25px 0 #999999;
+  margin: 2rem auto;
+  width: 50%;
+}
+
+.commentDiv p {
+  font-size: 20px;
+  padding: 0;
+  font-weight: bold;
 }
 
 .modal {
@@ -27,7 +89,7 @@ body, html {
 
 .modal-content {
   position: relative;
-  background-color: red;
+  background: linear-gradient(to bottom, rgba(147, 206, 222, 1) 0%, rgba(117, 189, 209, 1) 41%, rgba(73, 165, 191, 1) 100%);
   margin: auto;
   padding: 0;
   width: 40%;
@@ -81,4 +143,13 @@ body, html {
 
 #modal-span:hover {
   cursor: pointer;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

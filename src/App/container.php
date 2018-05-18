@@ -86,4 +86,9 @@ $container['comments'] = function ($c) {
     return $commentControllers;
 };
 
+$container['likes'] = function ($c) {
+    $likeControllers = new \App\Controllers\LikeController($c->get('db'));
+    return $likeControllers;
+};
+
 return $container;

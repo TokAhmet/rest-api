@@ -213,6 +213,22 @@ $app->group('/api', function () use ($app) {
     return $response->withJson($deleteEntry);
   });
 
+  $app->get('/likes/{entryID}', function ($request, $response, $args) {
+    $allLikes = $this->likes->getAll($args['entryID'], $_SESSION['userID']);
+    return $response->withJson(['data' => $allLikes]);
+  });
+
+  $app->post('/likes', function ($request, $response, $args) {
+    $body = $request->getParsedBody();
+    $newLike = $this->likes->add($body, $_SESSION["userID"]);
+    return $response->withJson(['data' => $newLike]);
+  });
+
+  $app->delete("/likes/{entryID}", function($request, $response, $args) {
+    $deleteLike = $this->likes->removeLike($args['entryID'], $_SESSION["userID"]);
+    return $response->withJson($deleteLike);
+  });
+
 });
 
 $app->run();
