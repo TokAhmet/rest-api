@@ -237,8 +237,8 @@ $app->group('/api', function () use ($app) {
         $this->comments->removeComment($args['id']);
     });
 
-    $app->get('/likes', function($request, $response, $args) {
-       $allLikes = $this->likes->getAll();
+    $app->get('/likes/{entryID}', function($request, $response, $args) {
+        $allLikes = $this->likes->getAll($_SESSION['userID'], $args['entryID']);
        return $response->withJson(['data' => $allLikes]);
     });
 

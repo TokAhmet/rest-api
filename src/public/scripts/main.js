@@ -7,36 +7,43 @@ function main(){
 	.then(console.log);
 }
 
-function getAllLikes(){
-	fetch('api/likes')
-	.then(res => res.json())
-	.then(console.log);
+function getAllLikes(entryID){
+	const postOptions = {
+		method: 'GET',
+		credentials: 'include'
+	}
+	
+	return fetch('api/likes/' + entryID, postOptions) 
+	.then(res => res.json());
 }
 
+
 function removeLike(entryID) {
-	fetch('api/likes/' + entryID,
-		{ method: 'DELETE' })
-		.then(res => res.json())
-		.then(console.log);
+	fetch('api/likes/' + entryID,{
+		method: 'DELETE',
+		credentials: 'include'
+	})
+	.then(res => res.json())
+	.then(console.log);
 }
 
 function postLike(entryID) {
 	// x-www-form-urlencoded
 	const formData = new FormData();
 	formData.append('entryID', entryID);
-
+	
 	const postOptions = {
 		method: 'POST',
 		body: formData,
 		// MUCH IMPORTANCE!
 		credentials: 'include'
 	}
-
+	
 	fetch('api/likes', postOptions)
-		.then(res => res.json())
-		.then((newTodo) => {
-			document.body.insertAdjacentHTML('beforeend', newTodo.data.content);
-		});
+	.then(res => res.json())
+	.then((newTodo) => {
+		document.body.insertAdjacentHTML('beforeend', newTodo.data.content);
+	});
 }
 
 function searchByTitle(title){
@@ -75,9 +82,9 @@ function removeEntry(entryID) {
 
 function removeComment(entryID) {
 	fetch('api/comments/' + entryID,
-		{ method: 'DELETE' })
-		.then(res => res.json())
-		.then(console.log);
+	{ method: 'DELETE' })
+	.then(res => res.json())
+	.then(console.log);
 }
 
 function editEntry(entryID, body) {
@@ -90,30 +97,30 @@ function editEntry(entryID, body) {
 		// MUCH IMPORTANCE!
 		credentials: 'include'
 	}
-
+	
 	fetch('api/entries/' + entryID, postOptions)
-		.then(res => res.json())
-		.then((newTodo) => {
-			console.log(newTodo)
-		});
+	.then(res => res.json())
+	.then((newTodo) => {
+		console.log(newTodo)
+	});
 }
 
 function createEntry(entries){
 	let entryOutput = document.getElementById('entry');
-
+	
 	allEntries = entries;
-
-	return entries.data.forEach(entry => {
+	
+	return entries.data.forEach(async entry => {
 		let entryDiv = document.createElement('div');
 		let entryTitle = document.createElement('h3');
 		entryDiv.id = entry.entryID;
 		entryTitle.innerHTML = entry.title;
 		entryDiv.appendChild(entryTitle);
-
+		
 		let entryContent = document.createElement('p');
 		entryContent.innerHTML = entry.content;
 		entryDiv.appendChild(entryContent);
-
+		
 		let entryDeleteButton = document.createElement('button');
 		entryDeleteButton.innerHTML = 'Delete';
 		entryDeleteButton.addEventListener('click', function (e) {
@@ -121,7 +128,7 @@ function createEntry(entries){
 			location.reload();
 		})
 		entryDiv.appendChild(entryDeleteButton);
-
+		
 		let entryEditButton = document.createElement('button');
 		entryEditButton.innerHTML = 'Edit';
 		entryEditButton.addEventListener('click', function (e) {
@@ -130,28 +137,32 @@ function createEntry(entries){
 			createEditForm(entry);
 			const modal = document.getElementsByClassName("modal")[0];
 			modal.style.display = "block";
-			console.log(entry);
 		})
 		entryDiv.appendChild(entryEditButton);
 
-		let likeButton = document.createElement('button');
-		likeButton.innerHTML = "Like";
-		likeButton.addEventListener('click', (e) => {
-			postLike(entry.entryID);
-		})
-		entryDiv.appendChild(likeButton);
+		const likeResponse = await getAllLikes(entry.entryID);
 
-		let removeLikeButton = document.createElement('button');
-		removeLikeButton.innerHTML = "Remove like";
-		removeLikeButton.addEventListener('click', (e) => {
-			removeLike(entry.entryID);
-		})
-		entryDiv.appendChild(removeLikeButton);
-
+		if (likeResponse.data){
+			let removeLikeButton = document.createElement('button');
+			removeLikeButton.innerHTML = "Remove like";
+			removeLikeButton.addEventListener('click', (e) => {
+				removeLike(entry.entryID);
+			})
+			entryDiv.appendChild(removeLikeButton);
+		}
+		else{
+			let likeButton = document.createElement('button');
+			likeButton.innerHTML = "Like";
+			likeButton.addEventListener('click', (e) => {
+				postLike(entry.entryID);
+			})
+			entryDiv.appendChild(likeButton);
+		}
+		
 		let commentDiv = document.createElement('div');
 		let commentTextarea = document.createElement('textarea');
 		commentDiv.appendChild(commentTextarea);
-
+		
 		let addCommentButton = document.createElement('button');
 		addCommentButton.innerHTML = "Add Comment";
 		addCommentButton.addEventListener('click', function (e) {
@@ -160,26 +171,26 @@ function createEntry(entries){
 			location.reload();
 		});
 		commentDiv.appendChild(addCommentButton);
-
+		
 		allComments.data.forEach(comment => {
 			if (comment.entryID === entry.entryID) {
 				let postedCommentDiv = document.createElement('div');
 				let commentContent = document.createElement('p');
 				commentContent.innerHTML = comment.content;
-
+				
 				let deleteCommentButton = document.createElement('button');
 				deleteCommentButton.innerHTML = 'Delete Comment';
 				deleteCommentButton.addEventListener('click', (e) => {
 					removeComment(comment.commentID);
 					location.reload();
 				})
-
+				
 				postedCommentDiv.appendChild(commentContent);
 				postedCommentDiv.appendChild(deleteCommentButton);
 				commentDiv.appendChild(postedCommentDiv);
 			}
 		});
-
+		
 		entryDiv.appendChild(commentDiv);
 		entryOutput.appendChild(entryDiv);
 	});
@@ -190,7 +201,7 @@ function createEditForm(entry){
 	let editForm = document.createElement('form');
 	let titleDiv = document.createElement('div');
 	let titleInput = document.createElement('input');
-
+	
 	formDiv.classList.add('modal')
 	editForm.classList.add('modal-content')
 	titleInput.setAttribute('type', 'text');
@@ -198,14 +209,14 @@ function createEditForm(entry){
 	titleInput.value = entry.title;
 	titleDiv.appendChild(titleInput);
 	editForm.appendChild(titleDiv);
-
+	
 	let contentDiv = document.createElement('div');
 	let contentInput = document.createElement('textarea');
 	contentInput.name = "content";
 	contentInput.value = entry.content;
 	contentDiv.appendChild(contentInput);
 	editForm.appendChild(contentDiv);
-
+	
 	let formButton = document.createElement('input');
 	formButton.type = "submit";
 	formButton.innerHTML = "Update";
@@ -225,19 +236,19 @@ function postComment(entryID, commentContent) {
 	const formData = new FormData();
 	formData.append('entryID', entryID);
 	formData.append('content', commentContent);
-
+	
 	const postOptions = {
 		method: 'POST',
 		body: formData,
 		// MUCH IMPORTANCE!
 		credentials: 'include'
 	}
-
+	
 	fetch('api/comments', postOptions)
-		.then(res => res.json())
-		.then((newTodo) => {
-			document.body.insertAdjacentHTML('beforeend', newTodo.data.content);
-		});
+	.then(res => res.json())
+	.then((newTodo) => {
+		document.body.insertAdjacentHTML('beforeend', newTodo.data.content);
+	});
 }
 
 function getAllComments() {

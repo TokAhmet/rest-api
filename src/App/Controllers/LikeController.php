@@ -20,11 +20,18 @@ class LikeController
         $this->db = $pdo;
     }
 
-    public function getAll()
+    public function getAll($userID, $entryID)
     {
-        $getAll = $this->db->prepare('SELECT * FROM likes');
-        $getAll->execute();
-        return $getAll->fetchAll();
+        $getAll = $this->db->prepare('SELECT likes.userID, likes.entryID
+                                    FROM likes
+                                    LEFT JOIN users ON users.userID = likes.userID
+                                    LEFT JOIN entries ON entries.entryID = likes.entryID
+                                    WHERE likes.userID = :userID AND likes.entryID = :entryID');
+        $getAll->execute([
+            ':userID'  => $userID,
+            ':entryID' => $entryID
+        ]);
+        return $getAll->fetch();
     }
 
     public function removeLike($entryID, $userID)
@@ -62,7 +69,6 @@ class LikeController
          */
         return [
           'id'          => (int)$this->db->lastInsertId(),
-          'completed'   => false
         ];
     }
 }
