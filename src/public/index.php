@@ -167,15 +167,20 @@ $app->group('/api', function () use ($app) {
     });
 
     $app->get('/users/{id}', function ($request, $response, $args) {
-        $allUsers = $this->users->getOne($args['id']);
-        return $response->withJson($allUsers);
+        $oneUser = $this->users->getOne($args['id']);
+        return $response->withJson($oneUser);
+    });
+
+    $app->get('/user', function ($request, $response, $args) {
+        $oneUser = $this->users->getOne($_SESSION['userID']);
+        return $response->withJson(['data' => $oneUser]);
     });
 
     $app->get('/users/limit/{amount}', function ($request, $response, $args) {
         $limitEntry = $this->users->getLimit($args['amount']);
         return $response->withJson(['data' => $limitEntry]);
     });
-
+    
     $app->get('/comments/limit/{amount}', function ($request, $response, $args) {
         $amount = $args['amount'];
         $limitEntry = $this->comments->getLimit($amount);

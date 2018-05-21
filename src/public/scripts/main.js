@@ -56,7 +56,6 @@ function searchByTitle(title){
 	});
 }
 
-
 function searchController(){
 	let searchForm = document.getElementById('searchForm');
 	searchForm.addEventListener('submit', (e) => {
@@ -71,6 +70,13 @@ function getAllUsers(){
 	fetch('api/users')
 	.then(res => res.json())
 	.then(console.log);
+}
+
+function getOneUser() {
+	return fetch('api/user', {
+		credentials: 'include'
+	})
+	.then(res => res.json())
 }
 
 function removeEntry(entryID) {
@@ -120,26 +126,30 @@ function createEntry(entries){
 		let entryContent = document.createElement('p');
 		entryContent.innerHTML = entry.content;
 		entryDiv.appendChild(entryContent);
-		
-		let entryDeleteButton = document.createElement('button');
-		entryDeleteButton.innerHTML = 'Delete';
-		entryDeleteButton.addEventListener('click', function (e) {
-			removeEntry(entry.entryID);
-			location.reload();
-		})
-		entryDiv.appendChild(entryDeleteButton);
-		
-		let entryEditButton = document.createElement('button');
-		entryEditButton.innerHTML = 'Edit';
-		entryEditButton.addEventListener('click', function (e) {
-			const editID = this.parentElement.id;
-			const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
-			createEditForm(entry);
-			const modal = document.getElementsByClassName("modal")[0];
-			modal.style.display = "block";
-		})
-		entryDiv.appendChild(entryEditButton);
 
+		const loggedInUser = await getOneUser();
+
+		if (loggedInUser.data.userID === entry.createdBy || loggedInUser.data.admin == 1) {
+			let entryDeleteButton = document.createElement('button');
+			entryDeleteButton.innerHTML = 'Delete';
+			entryDeleteButton.addEventListener('click', function (e) {
+				removeEntry(entry.entryID);
+				location.reload();
+			})
+			entryDiv.appendChild(entryDeleteButton);
+			
+			let entryEditButton = document.createElement('button');
+			entryEditButton.innerHTML = 'Edit';
+			entryEditButton.addEventListener('click', function (e) {
+				const editID = this.parentElement.id;
+				const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
+				createEditForm(entry);
+				const modal = document.getElementsByClassName("modal")[0];
+				modal.style.display = "block";
+			})
+			entryDiv.appendChild(entryEditButton);
+		}
+		
 		const likeResponse = await getAllLikes(entry.entryID);
 
 		if (likeResponse.data){
@@ -177,16 +187,19 @@ function createEntry(entries){
 				let postedCommentDiv = document.createElement('div');
 				let commentContent = document.createElement('p');
 				commentContent.innerHTML = comment.content;
-				
-				let deleteCommentButton = document.createElement('button');
-				deleteCommentButton.innerHTML = 'Delete Comment';
-				deleteCommentButton.addEventListener('click', (e) => {
-					removeComment(comment.commentID);
-					location.reload();
-				})
-				
 				postedCommentDiv.appendChild(commentContent);
-				postedCommentDiv.appendChild(deleteCommentButton);
+				
+				if(loggedInUser.data.userID === comment.createdBy || loggedInUser.data.admin == 1) {
+					let deleteCommentButton = document.createElement('button');
+					deleteCommentButton.innerHTML = 'Delete Comment';
+					deleteCommentButton.addEventListener('click', (e) => {
+						removeComment(comment.commentID);
+						location.reload();
+					})
+					
+					postedCommentDiv.appendChild(deleteCommentButton);
+				}
+				
 				commentDiv.appendChild(postedCommentDiv);
 			}
 		});
@@ -271,7 +284,7 @@ function getAllEntries() {
 }
 getAllEntries();
 
-function postTodo(){
+function postEntry(){
 	// x-www-form-urlencoded
 	const formData = new FormData();
 	const todoTitle = document.getElementById('title');
@@ -296,7 +309,7 @@ function postTodo(){
 const postForm = document.getElementById('postForm');
 postForm.addEventListener('submit', (e) => {
 	e.preventDefault();
-	postTodo();
+	postEntry();
 	postForm.reset();
 	location.reload();
 });
