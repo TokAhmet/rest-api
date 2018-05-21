@@ -38,7 +38,6 @@ class UserController
         return $oneUser;
     }
 
-
     public function signIn($username,$password)
     {
      $statement = $this->db->prepare("SELECT * from users WHERE username = :username");

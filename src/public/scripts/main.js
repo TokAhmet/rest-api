@@ -13,6 +13,13 @@ function getAllUsers() {
     .then(console.log);
 }
 
+function getOneUser() {
+  return fetch("api/user", {
+      credentials: 'include'
+    })
+    .then(res => res.json())
+}
+
 function getTitle(titleInput) {
   let entryOutput = document.getElementById('entryOutput');
   entryOutput.innerHTML = "";
@@ -38,6 +45,7 @@ function getAllEntries() {
   fetch("api/entries")
     .then(res => res.json())
     .then(function(data) {
+
       createEntry(data);
     })
     .then(console.log);
@@ -142,6 +150,7 @@ function createEntry(data) {
   return data.data.forEach(async obj => {
     let entryDiv = document.createElement("div");
     entryDiv.classList.add("text-center");
+    entryDiv.classList.add("form-group");
     entryDiv.classList.add("entryDiv");
     entryDiv.id = obj.entryID;
 
@@ -153,53 +162,63 @@ function createEntry(data) {
     entryContent.innerHTML = "Content: " + obj.content;
     entryDiv.appendChild(entryContent);
 
-    let updateButton = document.createElement("button");
-    updateButton.innerHTML = "Edit";
-    updateButton.classList.add("btn-info");
-    updateButton.addEventListener('click', function(e) {
-      const editID = this.parentElement.id;
-      const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
-      updateEntry(entry);
-      const modal = document.getElementsByClassName("modal")[0];
-      modal.style.display = "block";
-      window.onclick = function(event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
+    const loggedInUser = await getOneUser();
+    console.log(loggedInUser.data.userID);
+
+    if (loggedInUser.data.userID === obj.createdBy || loggedInUser.data.admin === "1") {
+
+      let updateButton = document.createElement("button");
+      updateButton.innerHTML = "Edit";
+      updateButton.classList.add("btn");
+      updateButton.classList.add("btn-warning");
+      updateButton.addEventListener('click', function(e) {
+        const editID = this.parentElement.id;
+        const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
+        updateEntry(entry);
+        const modal = document.getElementsByClassName("modal")[0];
+        modal.style.display = "block";
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
         }
-      }
-      console.log(entry);
+        console.log(entry);
 
-    });
+      });
 
-    entryDiv.appendChild(updateButton);
+      entryDiv.appendChild(updateButton);
 
-    let deleteEntryButton = document.createElement("button");
-    deleteEntryButton.innerHTML = "Delete";
-    deleteEntryButton.classList.add("btn-danger");
-    deleteEntryButton.addEventListener('click', function(e) {
-      removeEntry(obj.entryID);
-      console.log(obj.entryID);
-      location.reload();
+      let deleteEntryButton = document.createElement("button");
+      deleteEntryButton.innerHTML = "Delete";
+      deleteEntryButton.classList.add("btn");
+      deleteEntryButton.classList.add("btn-danger");
+      deleteEntryButton.addEventListener('click', function(e) {
+        removeEntry(obj.entryID);
+        console.log(obj.entryID);
+        location.reload();
 
-    });
+      });
 
-    entryDiv.appendChild(deleteEntryButton);
+      entryDiv.appendChild(deleteEntryButton);
+    }
+
     const likeResponse = await getLikes(obj.entryID);
     console.log(likeResponse.data);
 
     if (likeResponse.data) {
       let removeLikeButton = document.createElement("button");
       removeLikeButton.innerHTML = "Remove Like";
+      removeLikeButton.classList.add("btn");
       removeLikeButton.classList.add("btn-danger");
       removeLikeButton.addEventListener('click', (e) => {
         removeLike(obj.entryID);
       });
 
       entryDiv.appendChild(removeLikeButton);
-
     } else {
       let likeButton = document.createElement("button");
       likeButton.innerHTML = "Like";
+      likeButton.classList.add("btn");
       likeButton.classList.add("btn-primary");
       likeButton.addEventListener('click', (e) => {
         postLike(obj.entryID);
@@ -214,6 +233,7 @@ function createEntry(data) {
     commentDiv.appendChild(commentTextarea);
 
     let addCommentButton = document.createElement("button");
+    addCommentButton.classList.add("btn");
     addCommentButton.classList.add("btn-success");
     addCommentButton.innerHTML = "Add Comment";
 
@@ -233,17 +253,20 @@ function createEntry(data) {
         outputComment.classList.add("commentDiv");
         let commentContent = document.createElement("p");
         commentContent.innerHTML = comment.content;
-
-        let deleteCommentButton = document.createElement("button");
-        deleteCommentButton.innerHTML = "Delete Comment";
-        deleteCommentButton.classList.add("btn-danger");
-        deleteCommentButton.addEventListener('click', function(e) {
-          removeComment(comment.commentID);
-          location.reload();
-        });
-
         outputComment.appendChild(commentContent);
-        outputComment.appendChild(deleteCommentButton);
+
+        if (loggedInUser.data.userID === comment.createdBy || loggedInUser.data.admin === "1") {
+          let deleteCommentButton = document.createElement("button");
+          deleteCommentButton.innerHTML = "Delete Comment";
+          deleteCommentButton.classList.add("btn");
+          deleteCommentButton.classList.add("btn-danger");
+          deleteCommentButton.addEventListener('click', function(e) {
+            removeComment(comment.commentID);
+            location.reload();
+          });
+          outputComment.appendChild(deleteCommentButton);
+        }
+
         commentDiv.appendChild(outputComment);
 
       }
