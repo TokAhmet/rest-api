@@ -11,7 +11,7 @@ class UserController
         $this->db = $pdo;
     }
 
-    public function getLimit($amount)
+    public function getLimit(int $amount)
     {
         $getLimit = $this->db->prepare('SELECT * FROM users LIMIT :amount');
         $getLimit->bindParam(':amount', $amount, \PDO::PARAM_INT);
@@ -21,7 +21,7 @@ class UserController
 
     public function getAll()
     {
-        $getAllUsers = $this->db->prepare("SELECT * FROM users");
+        $getAllUsers = $this->db->prepare('SELECT * FROM users');
         $getAllUsers->execute();
         $allUsers = $getAllUsers->fetchAll();
         return $allUsers;
@@ -29,9 +29,9 @@ class UserController
 
     public function getOne($id)
     {
-        $getOneUser = $this->db->prepare("SELECT * FROM users WHERE UserID = :id");
+        $getOneUser = $this->db->prepare('SELECT * FROM users WHERE UserID = :id');
         $getOneUser->execute([
-          ":id" => $id
+          ':id' => $id
         ]);
         // Fetch -> single resource
         $oneUser = $getOneUser->fetch();
@@ -42,18 +42,17 @@ class UserController
     {
      $statement = $this->db->prepare("SELECT * from users WHERE username = :username");
      $statement->execute([
-         ":username" => $username
+         ':username' => $username
      ]);
 
      $user = $statement->fetch();
 
-     if (password_verify($password, $user["password"])) {
+     if (password_verify($password, $user['password'])) {
          return $user['userID'];
-
-     } else {
+    }
+    else {
          return false;
      }
-
  }
 
     public function store($username,$password)
@@ -66,8 +65,8 @@ class UserController
       );
 
       $statement->execute([
-        ":username" => $username,
-        ":password" => $hashed
+        ':username' => $username,
+        ':password' => $hashed
       ]);
 
     }

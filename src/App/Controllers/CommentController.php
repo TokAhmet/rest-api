@@ -11,7 +11,7 @@ class CommentController
         $this->db = $pdo;
     }
 
-    public function getLimit($amount)
+    public function getLimit(int $amount)
     {
       $getLimit = $this->db->prepare('SELECT * FROM comments LIMIT :amount');
       $getLimit->bindParam(':amount', $amount, \PDO::PARAM_INT);
@@ -27,7 +27,7 @@ class CommentController
 
     }
 
-    public function getCommentsFromEntryByLimit($id, $amount)
+    public function getCommentsFromEntryByLimit(int $id, int $amount)
     {
       $getCommentsByLimit = $this->db->prepare('SELECT * FROM comments WHERE entryID = :id LIMIT :amount');
       $getCommentsByLimit->bindParam(':id', $id, \PDO::PARAM_INT);
@@ -58,16 +58,16 @@ class CommentController
          * Default 'completed' is false so we only need to insert the 'content'
          */
         $addOne = $this->db->prepare(
-            'INSERT INTO comments (entryID,content,createdBy) VALUES (:entryID,:content,:createdBy)'
+            'INSERT INTO comments (entryID, content, createdBy) VALUES (:entryID, :content, :createdBy)'
         );
 
         /**
          * Insert the value from the parameter into the database
          */
         $addOne->execute([
-          ":entryID" => $comment["entryID"],
+          ':entryID' => $comment['entryID'],
           ':content'  => $comment['content'],
-          ":createdBy" => $userID
+          ':createdBy' => $userID
       ]);
 
         /**
@@ -77,19 +77,17 @@ class CommentController
          */
         return [
           'id'          => (int)$this->db->lastInsertId(),
-          "entryID"     => $comment["entryID"],
+          'entryID'     => $comment['entryID'],
           'content'     => $comment['content'],
-          "createdBy"   => $userID
+          'createdBy'   => $userID
         ];
     }
 
     public function removeComment($commentID)
    {
-       $statement = $this->db->prepare("DELETE FROM comments WHERE commentID = :commentID");
+       $statement = $this->db->prepare('DELETE FROM comments WHERE commentID = :commentID');
        $statement->execute([
-           ":commentID" => $commentID
+           ':commentID' => $commentID
        ]);
-
    }
-
   }

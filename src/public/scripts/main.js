@@ -2,14 +2,14 @@ let allEntries = [];
 let allComments = [];
 
 function getOneUser() {
-  return fetch("api/user", {
+  return fetch('api/user', {
       credentials: 'include'
     })
     .then(res => res.json())
 }
 
 function getAllEntries() {
-  fetch("api/entries")
+  fetch('api/entries')
     .then(res => res.json())
     .then(function(data) {
 
@@ -28,7 +28,7 @@ function updateEntry(entry) {
   let titleHeader = document.createElement("h2");
   titleHeader.innerHTML = "Title";
   let titleInput = document.createElement("input");
-  titleInput.setAttribute('type', "text");
+  titleInput.setAttribute("type", "text");
   titleInput.name = "title";
   titleInput.value = entry.title;
   editForm.appendChild(titleHeader);
@@ -44,7 +44,7 @@ function updateEntry(entry) {
 
   let editButton = document.createElement("button");
   editButton.innerHTML = "Edit";
-  editButton.addEventListener('submit', function(e) {
+  editButton.addEventListener("submit", function(e) {
     e.preventDefault();
     const body = `content=${contentInput.value}&title=${titleInput.value}`;
     editEntry(entry.entryID, body);
@@ -76,7 +76,7 @@ function postEntry() {
   const formData = new FormData();
   const title = document.getElementById('title').value;
   const content = document.getElementById('content').value;
-  formData.append("title", title);
+  formData.append('title', title);
   formData.append('content', content);
 
   const postOptions = {
@@ -108,15 +108,15 @@ function editEntry(entryID, body) {
 }
 
 function removeEntry(entryID) {
-  fetch("api/entries/" + entryID, {
-      method: "DELETE"
+  fetch('api/entries/' + entryID, {
+      method: 'DELETE'
     })
     .then(res => res.json())
     .then(console.log);
 }
 
 function createEntry(data) {
-  let entryOutput = document.getElementById('entryOutput');
+  let entryOutput = document.getElementById("entryOutput");
 
   allEntries = data;
 
@@ -137,7 +137,7 @@ function createEntry(data) {
 
     const loggedInUser = await getOneUser();
 
-    if (loggedInUser.data.userID === obj.createdBy || loggedInUser.data.admin === "1") {
+    if (loggedInUser.data.userID === obj.createdBy || loggedInUser.data.admin == 1) {
       let updateButton = document.createElement("button");
       updateButton.innerHTML = "Edit";
       updateButton.classList.add("btn");
@@ -163,16 +163,13 @@ function createEntry(data) {
       deleteEntryButton.classList.add("btn-danger");
       deleteEntryButton.addEventListener('click', function(e) {
         removeEntry(obj.entryID);
-        console.log(obj.entryID);
         location.reload();
-
       });
 
       entryDiv.appendChild(deleteEntryButton);
     }
 
     const likeResponse = await getLikes(obj.entryID);
-    console.log(likeResponse.data);
 
     if (likeResponse.data) {
       let removeLikeButton = document.createElement("button");
@@ -184,7 +181,8 @@ function createEntry(data) {
       });
 
       entryDiv.appendChild(removeLikeButton);
-    } else {
+    } 
+    else {
       let likeButton = document.createElement("button");
       likeButton.innerHTML = "Like";
       likeButton.classList.add("btn");
@@ -224,7 +222,7 @@ function createEntry(data) {
         commentContent.innerHTML = comment.content;
         outputComment.appendChild(commentContent);
 
-        if (loggedInUser.data.userID === comment.createdBy || loggedInUser.data.admin === "1") {
+        if (loggedInUser.data.userID === comment.createdBy || loggedInUser.data.admin == 1) {
           let deleteCommentButton = document.createElement("button");
           deleteCommentButton.innerHTML = "Delete Comment";
           deleteCommentButton.classList.add("btn");
@@ -242,7 +240,6 @@ function createEntry(data) {
 
     entryDiv.appendChild(commentDiv);
     entryOutput.appendChild(entryDiv);
-
   });
 }
 

@@ -144,18 +144,18 @@ $app->group('/api', function () use ($app) {
     * https://www.slimframework.com/docs/v3/objects/request.html#the-request-body
     */
     $body = $request->getParsedBody();
-    $newEntry = $this->entries->add($body,$_SESSION["userID"]);
+    $newEntry = $this->entries->add($body, $_SESSION['userID']);
     return $response->withJson(['data' => $newEntry]);
   });
 
-  $app->patch("/entries/{id}", function($request, $response, $args) {
+  $app->patch('/entries/{id}', function($request, $response, $args) {
     $body = $request->getparsedBody();
-    $editEntry = $this->entries->editEntry($args["id"],$body["title"],$body["content"]);
+    $editEntry = $this->entries->editEntry($args['id'], $body['title'], $body['content']);
     return $response->withJson($editEntry);
   });
 
-  $app->delete("/entries/{id}", function($request, $response, $args) {
-    $deleteEntry = $this->entries->removeEntry($args["id"]);
+  $app->delete('/entries/{id}', function($request, $response, $args) {
+    $deleteEntry = $this->entries->removeEntry($args['id']);
     return $response->withJson($deleteEntry);
   });
 
@@ -207,12 +207,12 @@ $app->group('/api', function () use ($app) {
 
   $app->post('/comments', function ($request, $response, $args) {
     $body = $request->getParsedBody();
-    $newComment = $this->comments->add($body,$_SESSION["userID"]);
+    $newComment = $this->comments->add($body, $_SESSION['userID']);
     return $response->withJson(['data' => $newComment]);
   });
 
-  $app->delete("/comments/{id}", function($request, $response, $args) {
-    $deleteEntry = $this->comments->removeComment($args["id"]);
+  $app->delete('/comments/{id}', function($request, $response, $args) {
+    $deleteEntry = $this->comments->removeComment($args['id']);
     return $response->withJson($deleteEntry);
   });
 
@@ -223,15 +223,14 @@ $app->group('/api', function () use ($app) {
 
   $app->post('/likes', function ($request, $response, $args) {
     $body = $request->getParsedBody();
-    $newLike = $this->likes->add($body, $_SESSION["userID"]);
+    $newLike = $this->likes->add($body, $_SESSION['userID']);
     return $response->withJson(['data' => $newLike]);
   });
 
-  $app->delete("/likes/{entryID}", function($request, $response, $args) {
-    $deleteLike = $this->likes->removeLike($args['entryID'], $_SESSION["userID"]);
+  $app->delete('/likes/{entryID}', function($request, $response, $args) {
+    $deleteLike = $this->likes->removeLike($args['entryID'], $_SESSION['userID']);
     return $response->withJson($deleteLike);
   });
-
 });
 
 $app->run();

@@ -44,23 +44,22 @@ class LikeController
       );
 
       $addOne->execute([
-        ":entryID" => $entry["entryID"],
+        ':entryID' => $entry['entryID'],
         ':userID'  => $user
       ]);
 
       return [
-        "entryID" => $entry["entryID"],
-        'userID' => $user
+        'entryID' => $entry['entryID'],
+        'userID'  => $user
       ];
     }
 
     public function removeLike($entryID, $userID)
     {
-      $statement = $this->db->prepare("DELETE FROM likes WHERE entryID = :entryID AND userID = :userID");
+      $statement = $this->db->prepare('DELETE FROM likes WHERE entryID = :entryID AND userID = :userID');
       $statement->execute([
-        ":entryID" => $entryID,
-        ":userID" => $userID
+        ':entryID' => $entryID,
+        ':userID'  => $userID
       ]);
   }
-
 }

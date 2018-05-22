@@ -1,10 +1,8 @@
 function getComments() {
-  fetch("api/comments")
+  fetch('api/comments')
     .then(res => res.json())
     .then(function(data) {
-
       allComments = data;
-      
     });
 }
 
@@ -13,7 +11,7 @@ function postComment(entryID, commentContent) {
   const formData = new FormData();
 
   formData.append('entryID', entryID);
-  formData.append("content", commentContent);
+  formData.append('content', commentContent);
 
   const postOptions = {
     method: 'POST',
@@ -28,8 +26,8 @@ function postComment(entryID, commentContent) {
 }
 
 function removeComment(commentID) {
-  fetch("api/comments/" + commentID, {
-      method: "DELETE"
+  fetch('api/comments/' + commentID, {
+      method: 'DELETE'
     })
     .then(res => res.json())
     .then(console.log);
