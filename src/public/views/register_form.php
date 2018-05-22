@@ -22,6 +22,7 @@ require_once "partials/nav.php";?>
         <input type="submit" class="center-block btn btn-success" value="Register">
       </div>
     </div>
-</form>
+  </form>
 </div>
+
 <?php require 'partials/footer.php';?>

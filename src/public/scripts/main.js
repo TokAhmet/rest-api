@@ -1,45 +1,12 @@
 let allEntries = [];
 let allComments = [];
 
-function main() {
-  fetch('api/facebook')
-    .then(res => res.json())
-    .then(console.log);
-}
-
-function getAllUsers() {
-  fetch('api/users')
-    .then(res => res.json())
-    .then(console.log);
-}
-
 function getOneUser() {
   return fetch("api/user", {
       credentials: 'include'
     })
     .then(res => res.json())
 }
-
-function getTitle(titleInput) {
-  let entryOutput = document.getElementById('entryOutput');
-  entryOutput.innerHTML = "";
-  fetch('api/entries/title/' + titleInput)
-    .then(res => res.json())
-    .then(function(data) {
-      createEntry(data);
-    })
-}
-
-function searchForTitle() {
-  let titleForm = document.getElementById('titleSearch');
-  titleForm.addEventListener('submit', function(e) {
-    let titleInput = document.getElementById('titleInput').value;
-    e.preventDefault();
-    getTitle(titleInput);
-  });
-}
-
-searchForTitle();
 
 function getAllEntries() {
   fetch("api/entries")
@@ -58,15 +25,21 @@ function updateEntry(entry) {
   editDiv.className = "modal";
   let editForm = document.createElement("form");
 
+  let titleHeader = document.createElement("h2");
+  titleHeader.innerHTML = "Title";
   let titleInput = document.createElement("input");
   titleInput.setAttribute('type', "text");
   titleInput.name = "title";
   titleInput.value = entry.title;
+  editForm.appendChild(titleHeader);
   editForm.appendChild(titleInput);
 
+  let contentHeader = document.createElement("h2");
+  contentHeader.innerHTML = "Content";
   let contentInput = document.createElement("textarea");
   contentInput.name = "content";
   contentInput.value = entry.content;
+  editForm.appendChild(contentHeader);
   editForm.appendChild(contentInput);
 
   let editButton = document.createElement("button");
@@ -163,10 +136,8 @@ function createEntry(data) {
     entryDiv.appendChild(entryContent);
 
     const loggedInUser = await getOneUser();
-    console.log(loggedInUser.data.userID);
 
     if (loggedInUser.data.userID === obj.createdBy || loggedInUser.data.admin === "1") {
-
       let updateButton = document.createElement("button");
       updateButton.innerHTML = "Edit";
       updateButton.classList.add("btn");
@@ -177,13 +148,11 @@ function createEntry(data) {
         updateEntry(entry);
         const modal = document.getElementsByClassName("modal")[0];
         modal.style.display = "block";
-        window.onclick = function(event) {
-          if (event.target == modal) {
+        window.onclick = function(e) {
+          if (e.target == modal) {
             modal.style.display = "none";
           }
         }
-        console.log(entry);
-
       });
 
       entryDiv.appendChild(updateButton);
@@ -239,7 +208,7 @@ function createEntry(data) {
 
     addCommentButton.addEventListener('click', function(e) {
       const entryID = this.parentElement.parentElement.id;
-      postComment(entryID, commentTextarea.value);
+      postComment(entryID, (commentTextarea.value + "<br />" + "Posted By: " + loggedInUser.data.username));
       location.reload();
     });
 
@@ -268,7 +237,6 @@ function createEntry(data) {
         }
 
         commentDiv.appendChild(outputComment);
-
       }
     });
 

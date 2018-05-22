@@ -1,6 +1,5 @@
 function getLikes(entryID) {
-    const postOptions = {
-    method: 'GET',
+  const postOptions = {
     credentials: 'include'
   }
 

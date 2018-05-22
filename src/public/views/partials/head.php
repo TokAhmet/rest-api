@@ -9,5 +9,4 @@
   <link rel="stylesheet" href="/css/style.css">
   <title>Placeholder</title>
 </head>
-
 <body>

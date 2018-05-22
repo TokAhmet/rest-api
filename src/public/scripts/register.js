@@ -21,6 +21,5 @@ const registerForm = document.getElementById('registerForm');
 registerForm.addEventListener('submit', (e) => {
   e.preventDefault();
   register();
-  
   window.location.href = "http://localhost:3000/";
 });

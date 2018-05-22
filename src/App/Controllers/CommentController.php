@@ -13,10 +13,10 @@ class CommentController
 
     public function getLimit($amount)
     {
-        $getLimit = $this->db->prepare('SELECT * FROM comments LIMIT :amount');
-        $getLimit->bindParam(':amount', $amount, \PDO::PARAM_INT);
-        $getLimit->execute();
-        return $getLimit->fetchAll();
+      $getLimit = $this->db->prepare('SELECT * FROM comments LIMIT :amount');
+      $getLimit->bindParam(':amount', $amount, \PDO::PARAM_INT);
+      $getLimit->execute();
+      return $getLimit->fetchAll();
     }
 
     public function getCommentsFromEntry($id)
@@ -77,7 +77,7 @@ class CommentController
          */
         return [
           'id'          => (int)$this->db->lastInsertId(),
-          "entryID"       => $comment["entryID"],
+          "entryID"     => $comment["entryID"],
           'content'     => $comment['content'],
           "createdBy"   => $userID
         ];

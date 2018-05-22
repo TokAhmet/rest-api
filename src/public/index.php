@@ -180,13 +180,11 @@ $app->group('/api', function () use ($app) {
   });
 
   $app->get('/comments/limit/{amount}', function ($request, $response, $args) {
-
     $limitEntry = $this->comments->getLimit($args['amount']);
     return $response->withJson(['data' => $limitEntry]);
   });
 
   $app->get('/entries/{entryID}/comments', function ($request, $response, $args) {
-
     $getEntryComments = $this->comments->getCommentsFromEntry($args['entryID']);
     return $response->withJson(['data', $getEntryComments]);
   });

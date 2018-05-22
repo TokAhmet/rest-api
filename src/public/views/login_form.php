@@ -24,4 +24,5 @@ require_once "partials/nav.php";?>
     </div>
   </form>
 </div>
+
 <?php require 'partials/footer.php';?>

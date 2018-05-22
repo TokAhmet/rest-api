@@ -4,8 +4,7 @@ function getComments() {
     .then(function(data) {
 
       allComments = data;
-      console.log(allComments);
-
+      
     });
 }
 

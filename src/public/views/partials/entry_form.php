@@ -2,7 +2,7 @@
   <h1 class="text-center">Entries</h1>
   <form class="form-horizontal" method="POST" id="entryForm">
     <div class="form-group">
-      <label class="control-label col-sm-4" for="title">Titel:</label>
+      <label class="control-label col-sm-4" for="title">Title:</label>
       <div class="col-sm-5">
         <input type="text" class="form-control" name="title" id="title" placeholder="Titel">
       </div>
