@@ -32,7 +32,7 @@ class ConfigHandler
         $config['db']['host']   = 'localhost:3306';
         $config['db']['user']   = 'root';
         $config['db']['pass']   = 'root';
-        $config['db']['dbname'] = 'todos';
+        $config['db']['dbname'] = 'facebook';
         return $config;
     }
 }

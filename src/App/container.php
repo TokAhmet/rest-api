@@ -70,14 +70,25 @@ $container['view'] = function ($container) {
  * as calling $this->get('db') in our routes in index.php
  */
 
-$container['todos'] = function ($c) {
-    $todosController = new TodoController($c->get('db'));
-    return $todosController;
-};
 
 $container['users'] = function ($c) {
     $userControllers = new \App\Controllers\UserController($c->get('db'));
     return $userControllers;
+};
+
+$container['entries'] = function ($c) {
+    $entryControllers = new \App\Controllers\EntryController($c->get('db'));
+    return $entryControllers;
+};
+
+$container['comments'] = function ($c) {
+    $commentControllers = new \App\Controllers\CommentController($c->get('db'));
+    return $commentControllers;
+};
+
+$container['likes'] = function ($c) {
+    $likeControllers = new \App\Controllers\LikeController($c->get('db'));
+    return $likeControllers;
 };
 
 return $container;

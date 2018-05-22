@@ -1,7 +1,173 @@
 body, html {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  box-sizing: border-box;
+  animation: fadein 1s;
+}
+
+.container {
+  background: linear-gradient(to bottom, rgba(242, 249, 254, 1) 0%, rgba(214, 240, 253, 1) 100%);
+  border: 1px solid black;
+  box-shadow: 0 0 25px 0 #999999;
+  margin: 2rem auto;
+  width: 80%;
+}
+
+.navbar-inverse {
+  background: linear-gradient(to bottom, rgba(242, 249, 254, 1) 0%, rgba(214, 240, 253, 1) 100%);
+}
+
+.navbar-inverse .navbar-nav>li>a {
+  color: #000;
+}
+
+.navbar-inverse .navbar-nav>li>a:hover {
+  color: #342456;
+}
+
+.navbar-inverse .navbar-brand {
+  color: #000;
+  font-weight: bold;
+}
+
+.entryDiv {
+  background: linear-gradient(to bottom, rgba(224, 243, 250, 1) 0%, rgba(216, 240, 252, 1) 50%, rgba(184, 226, 246, 1) 81%, rgba(182, 223, 253, 1) 100%);
+  border: 1px solid black;
+  border-radius: 35px 0 35px 0;
+  box-shadow: 0 0 25px 0 #999999;
+  margin: 2rem auto;
+  width: 80%;
+}
+
+.entryDiv:nth-child(odd) {
+  border-radius: 0 35px 0 35px;
+}
+
+.entryDiv h3 {
+  margin: 2rem;
+  font-weight: bold;
+}
+
+.entryDiv p {
+  font-size: 20px;
+  margin: 1rem;
+  padding: 0.5rem;
+}
+
+.entryDiv button {
+  margin: 1rem;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.entryDiv textarea {
+  border-radius: 5px;
+  display: block;
+  margin: 1rem auto;
+  padding: 1rem;
+  width: 50%;
+}
+
+.commentDiv {
+  background: linear-gradient(to bottom, rgba(242, 249, 254, 1) 0%, rgba(214, 240, 253, 1) 100%);
+  border: 2px solid black;
+  box-shadow: 0 0 25px 0 #999999;
+  margin: 2rem auto;
+  width: 50%;
+}
+
+.commentDiv p {
+  font-size: 20px;
+  padding: 0;
+  line-height: 2;
+  font-weight: normal;
+}
+
+.modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+.modal-content {
+  position: relative;
+  background: linear-gradient(to bottom, rgba(147, 206, 222, 1) 0%, rgba(117, 189, 209, 1) 41%, rgba(73, 165, 191, 1) 100%);
+  margin: auto;
+  padding: 0;
+  width: 40%;
+  border: 3px solid #000;
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -webkit-animation: fadein 0.8s;
+  animation: fadein 0.8s;
+}
+
+.modal-body {
+  padding: 2px 16px;
+  text-align: center;
+}
+
+.modal-body input, .modal-body textarea {
+  padding: 1rem;
+  margin: 1rem;
+  width: 90%;
+}
+
+.modal-footer {
+  padding: 2px 16px;
+  color: white;
+  min-height: 6rem;
+}
+
+.modal-footer button {
+  float: right;
+  -webkit-box-shadow: 0 3px #666;
+  box-shadow: 0 3px #666;
+  background-color: #000;
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: 6px;
+  margin: 10px;
+  width: 20%;
+  font-weight: bold;
+}
+
+.modal-footer button:hover {
+  cursor: pointer;
+}
+
+#modal-span {
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+#modal-span:hover {
+  cursor: pointer;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
