@@ -9,9 +9,9 @@
 	<div class="container">
 		
 	<?php if(!isset($_SESSION['userID'])): ?> 
-
 	<?php else:
 		require_once('partials/entry-post-form.php');
+		require_once('partials/edit-post-modal.php');
 		require_once('partials/entry-posts.php');
 	endif;?>
 	

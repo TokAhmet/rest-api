@@ -1,12 +1,6 @@
 let allEntries = [];
 let allComments = [];
 
-function main(){
-	fetch('api/facebook')
-	.then(res => res.json())
-	.then(console.log);
-}
-
 function getAllLikes(entryID){
 	const postOptions = {
 		method: 'GET',
@@ -16,7 +10,6 @@ function getAllLikes(entryID){
 	return fetch('api/likes/' + entryID, postOptions) 
 	.then(res => res.json());
 }
-
 
 function removeLike(entryID) {
 	fetch('api/likes/' + entryID,{
@@ -66,12 +59,6 @@ function searchController(){
 }
 searchController();
 
-function getAllUsers(){
-	fetch('api/users')
-	.then(res => res.json())
-	.then(console.log);
-}
-
 function getOneUser() {
 	return fetch('api/user', {
 		credentials: 'include'
@@ -117,13 +104,21 @@ function createEntry(entries){
 	allEntries = entries;
 	
 	return entries.data.forEach(async entry => {
+		let cardDiv = document.createElement('div');
+		cardDiv.classList.add('card');
+		cardDiv.classList.add('mt-md-5');
+
 		let entryDiv = document.createElement('div');
+		entryDiv.classList.add('card-body');
+		
 		let entryTitle = document.createElement('h3');
+		entryTitle.classList.add('card-title');
 		entryDiv.id = entry.entryID;
 		entryTitle.innerHTML = entry.title;
 		entryDiv.appendChild(entryTitle);
 		
 		let entryContent = document.createElement('p');
+		entryContent.classList.add('card-text');
 		entryContent.innerHTML = entry.content;
 		entryDiv.appendChild(entryContent);
 
@@ -132,6 +127,8 @@ function createEntry(entries){
 		if (loggedInUser.data.userID === entry.createdBy || loggedInUser.data.admin == 1) {
 			let entryDeleteButton = document.createElement('button');
 			entryDeleteButton.innerHTML = 'Delete';
+			entryDeleteButton.classList.add('btn');
+			entryDeleteButton.classList.add('btn-danger');
 			entryDeleteButton.addEventListener('click', function (e) {
 				removeEntry(entry.entryID);
 				location.reload();
@@ -140,12 +137,19 @@ function createEntry(entries){
 			
 			let entryEditButton = document.createElement('button');
 			entryEditButton.innerHTML = 'Edit';
+			entryEditButton.classList.add('btn');
+			entryEditButton.classList.add('btn-primary');
 			entryEditButton.addEventListener('click', function (e) {
 				const editID = this.parentElement.id;
 				const entry = allEntries.data.find(filterEntry => filterEntry.entryID === editID);
 				createEditForm(entry);
 				const modal = document.getElementsByClassName("modal")[0];
 				modal.style.display = "block";
+				window.onclick = function(e) {
+					if (e.target == modal){
+						modal.style.display = "none";
+					}
+				}
 			})
 			entryDiv.appendChild(entryEditButton);
 		}
@@ -155,6 +159,8 @@ function createEntry(entries){
 		if (likeResponse.data){
 			let removeLikeButton = document.createElement('button');
 			removeLikeButton.innerHTML = "Remove like";
+			removeLikeButton.classList.add('btn');
+			removeLikeButton.classList.add('btn-warning');
 			removeLikeButton.addEventListener('click', (e) => {
 				removeLike(entry.entryID);
 			})
@@ -163,6 +169,8 @@ function createEntry(entries){
 		else{
 			let likeButton = document.createElement('button');
 			likeButton.innerHTML = "Like";
+			likeButton.classList.add('btn');
+			likeButton.classList.add('btn-success');
 			likeButton.addEventListener('click', (e) => {
 				postLike(entry.entryID);
 			})
@@ -170,11 +178,17 @@ function createEntry(entries){
 		}
 		
 		let commentDiv = document.createElement('div');
+		commentDiv.classList.add('card-body');
 		let commentTextarea = document.createElement('textarea');
+		commentTextarea.classList.add('form-control');
 		commentDiv.appendChild(commentTextarea);
 		
 		let addCommentButton = document.createElement('button');
 		addCommentButton.innerHTML = "Add Comment";
+		addCommentButton.classList.add('btn');
+		addCommentButton.classList.add('btn-primary');
+		addCommentButton.classList.add('mt-md-2');
+
 		addCommentButton.addEventListener('click', function (e) {
 			const entryID = this.parentElement.parentElement.id;
 			postComment(entryID, commentTextarea.value);
@@ -192,6 +206,8 @@ function createEntry(entries){
 				if(loggedInUser.data.userID === comment.createdBy || loggedInUser.data.admin == 1) {
 					let deleteCommentButton = document.createElement('button');
 					deleteCommentButton.innerHTML = 'Delete Comment';
+					deleteCommentButton.classList.add('btn');
+					deleteCommentButton.classList.add('btn-danger');
 					deleteCommentButton.addEventListener('click', (e) => {
 						removeComment(comment.commentID);
 						location.reload();
@@ -204,44 +220,36 @@ function createEntry(entries){
 			}
 		});
 		
-		entryDiv.appendChild(commentDiv);
-		entryOutput.appendChild(entryDiv);
+
+		cardDiv.appendChild(entryDiv);
+		cardDiv.appendChild(commentDiv);		
+		entryOutput.appendChild(cardDiv);
 	});
 }
 
 function createEditForm(entry){
-	let formDiv = document.createElement('div');
-	let editForm = document.createElement('form');
-	let titleDiv = document.createElement('div');
-	let titleInput = document.createElement('input');
-	
-	formDiv.classList.add('modal')
-	editForm.classList.add('modal-content')
-	titleInput.setAttribute('type', 'text');
+	let modal = document.querySelector('#editModal');
+
+	let titleInput = modal.querySelector('#title');
 	titleInput.name = "title";
 	titleInput.value = entry.title;
-	titleDiv.appendChild(titleInput);
-	editForm.appendChild(titleDiv);
-	
-	let contentDiv = document.createElement('div');
-	let contentInput = document.createElement('textarea');
+		
+	let contentInput = modal.querySelector('#content');
+
 	contentInput.name = "content";
 	contentInput.value = entry.content;
-	contentDiv.appendChild(contentInput);
-	editForm.appendChild(contentDiv);
-	
-	let formButton = document.createElement('input');
-	formButton.type = "submit";
-	formButton.innerHTML = "Update";
-	editForm.addEventListener('submit', function(e) {
-		e.preventDefault();
+
+	let closeBtn = modal.querySelector('#closeBtn');
+	closeBtn.addEventListener('click', function(e) {
+		modal.style.display = "none";
+	})
+
+	let formButton = modal.querySelector('#updateBtn');
+	formButton.addEventListener('click', function(e) {
 		const body = `content=${contentInput.value}&title=${titleInput.value}`;
 		editEntry(entry.entryID, body);
 		location.reload();
 	})
-	editForm.appendChild(formButton);
-	formDiv.appendChild(editForm);
-	document.body.appendChild(formDiv);
 }
 
 function postComment(entryID, commentContent) {
