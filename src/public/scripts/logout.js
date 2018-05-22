@@ -1,6 +1,6 @@
 function logout() {
   fetch('/logout', { 
-    credentials: "include"
+    credentials: 'include'
   })
     .then(res => res.json())
     .then(console.log);

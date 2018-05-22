@@ -19,7 +19,7 @@ class EntryController
 
   }
 
-  public function getLimit($amount)
+  public function getLimit(int $amount)
   {
     $getLimit = $this->db->prepare('SELECT * FROM entries LIMIT :amount');
     $getLimit->bindParam(':amount', $amount, \PDO::PARAM_INT);
@@ -57,16 +57,16 @@ class EntryController
     * Default 'completed' is false so we only need to insert the 'content'
     */
     $addOne = $this->db->prepare(
-      'INSERT INTO entries (title,content,createdBy) VALUES (:title,:content,:createdBy)'
+      'INSERT INTO entries (title, content, createdBy) VALUES (:title, :content, :createdBy)'
     );
 
     /**
     * Insert the value from the parameter into the database
     */
     $addOne->execute([
-      ":title" => $entry["title"],
-      ':content'  => $entry['content'],
-      ":createdBy" => $user
+      ':title'     => $entry['title'],
+      ':content'   => $entry['content'],
+      ':createdBy' => $user
     ]);
 
     /**
@@ -76,17 +76,17 @@ class EntryController
     */
     return [
       'id'          => (int)$this->db->lastInsertId(),
-      "title"       => $entry["title"],
+      'title'       => $entry['title'],
       'content'     => $entry['content'],
-      "createdBy"   => $user
+      'createdBy'   => $user
     ];
   }
 
   public function removeEntry($entryID)
   {
-    $statement = $this->db->prepare("DELETE FROM entries WHERE entryID = :entryID");
+    $statement = $this->db->prepare('DELETE FROM entries WHERE entryID = :entryID');
     $statement->execute([
-      ":entryID" => $entryID
+      ':entryID' => $entryID
     ]);
 
   }
@@ -96,9 +96,9 @@ class EntryController
 
     $statement = $this->db->prepare("UPDATE entries SET title = :title, content = :content WHERE entryID = :entryID");
     $statement->execute([
-      ":entryID" => $entryID,
-      ":title" => $title,
-      "content" => $content
+      ':entryID' => $entryID,
+      ':title'   => $title,
+      ':content' => $content
     ]);
   }
 }

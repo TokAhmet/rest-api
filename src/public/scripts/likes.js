@@ -25,8 +25,8 @@ function postLike(entryID) {
 }
 
 function removeLike(entryID) {
-  fetch("api/likes/" + entryID, {
-      method: "DELETE",
+  fetch('api/likes/' + entryID, {
+      method: 'DELETE',
       credentials: 'include'
     })
     .then(res => res.json())
