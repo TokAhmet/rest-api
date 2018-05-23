@@ -178,10 +178,11 @@ function createEntry(data) {
       removeLikeButton.classList.add("btn-danger");
       removeLikeButton.addEventListener('click', (e) => {
         removeLike(obj.entryID);
+        location.reload();
       });
 
       entryDiv.appendChild(removeLikeButton);
-    } 
+    }
     else {
       let likeButton = document.createElement("button");
       likeButton.innerHTML = "Like";
@@ -189,6 +190,7 @@ function createEntry(data) {
       likeButton.classList.add("btn-primary");
       likeButton.addEventListener('click', (e) => {
         postLike(obj.entryID);
+        location.reload();
       });
 
       entryDiv.appendChild(likeButton);
