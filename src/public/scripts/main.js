@@ -44,7 +44,7 @@ function updateEntry(entry) {
 
   let editButton = document.createElement("button");
   editButton.innerHTML = "Edit";
-  editButton.addEventListener("submit", function(e) {
+  editButton.addEventListener("click", function(e) {
     e.preventDefault();
     const body = `content=${contentInput.value}&title=${titleInput.value}`;
     editEntry(entry.entryID, body);
