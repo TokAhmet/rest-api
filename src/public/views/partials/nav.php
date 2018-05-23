@@ -11,7 +11,7 @@ if (isset($_SESSION["loggedIn"])): ?>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="" id="navLogout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
     </ul>
-    <form class="navbar-form navbar-right" action="" id="titleSearch">
+    <form class="navbar-form navbar-right" action="" id="titleForm">
      <div class="input-group">
        <input type="text" class="form-control" placeholder="Search" id="titleInput">
        <div class="input-group-btn">

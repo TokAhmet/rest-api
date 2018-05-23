@@ -9,7 +9,7 @@ function getTitle(titleInput) {
 }
 
 function searchForTitle() {
-  let titleForm = document.getElementById('titleSearch');
+  let titleForm = document.getElementById('titleForm');
   titleForm.addEventListener('submit', function(e) {
     let titleInput = document.getElementById('titleInput').value;
     e.preventDefault();
